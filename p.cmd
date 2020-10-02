@@ -1,2 +1,2 @@
 cls
-git push %GITHUB-REPO%/stats-py
+git push %GITHUB-REPO%/utl-py
