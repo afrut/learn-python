@@ -5,6 +5,7 @@ import matplotlib.cm as cm
 import seaborn as sns
 import pandas as pd
 import math
+import stemgraphic as st
 
 # ----------------------------------------
 # boxplot
@@ -617,3 +618,36 @@ def colorscatter(x, y, z
         plt.close()
 
     return fig
+
+
+
+# ----------------------------------------
+# stem and leaf plot
+# ----------------------------------------
+def stemleaf(srs
+    ,title: str = None
+    ,save: bool = False
+    ,savepath: str = '.\\stemleaf.png'
+    ,show: bool = False
+    ,close: bool = False):
+
+    fig, ax = st.stem_graphic(srs)
+
+    # ----------------------------------------------------------------------
+    # formatting
+    # ----------------------------------------------------------------------
+    if title is not None:
+        ax.set_title(title)
+
+    if save:
+        if savepath[-1] == '\\':
+            savepath = savepath + 'stemleaf.png'
+        plt.savefig(savepath, format = 'png')
+
+    if show:
+        plt.show()
+
+    if close:
+        plt.close()
+
+    return (fig, ax)
