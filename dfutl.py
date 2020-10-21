@@ -1,4 +1,3 @@
-from log import log
 import numpy as np
 import pandas as pd
 import math
@@ -26,38 +25,38 @@ def checkNull(df
 
     nrow = len(rowsWithNulls)
     ncol = len(colsWithNulls)
-    log('{}Number of rows with missing data: {}'.format(indent, nrow))
-    log('{}Number of columns with missing data: {}'.format(indent, ncol))
+    print('{}Number of rows with missing data: {}'.format(indent, nrow))
+    print('{}Number of columns with missing data: {}'.format(indent, ncol))
 
     if printNullColumns:
-        log('{}Columns with nulls:'.format(indent))
+        print('{}Columns with nulls:'.format(indent))
         for col in colsWithNulls:
-            log('{}{}{}'.format(indent, indent, col))
+            print('{}{}{}'.format(indent, indent, col))
     if printNullRows:
-        log('{}Rows with nulls:'.format(indent))
+        print('{}Rows with nulls:'.format(indent))
         for row in rowsWithNulls.index:
-            log('{}{}{}'.format(indent, indent, row))
+            print('{}{}{}'.format(indent, indent, row))
 
     if droprows and nrow > 0:
-        log('{}Dropped the following rows:'.format(indent))
+        print('{}Dropped the following rows:'.format(indent))
         if printCols is None or len(printCols) == 0:
             for idx in rowsWithNulls.index:
-                log('{}{}{}'.format(indent, indent, idx))
+                print('{}{}{}'.format(indent, indent, idx))
         else:
             dfPrint = rowsWithNulls.loc[:, printCols]
             for tpl in dfPrint.itertuples():
                 msg = '{}'.format(tpl[0])
                 for cnt in range(1, len(tpl)):
                     msg = msg + ' - {}'.format(tpl[cnt])
-                log('{}{}{}'.format(indent, indent, msg))
+                print('{}{}{}'.format(indent, indent, msg))
         df.drop(labels = rowsWithNulls.index
             ,axis = 'rows'
             ,inplace = True)
 
     if dropcols and ncol > 0:
-        log('{}Dropped the following columns:'.format(indent))
+        print('{}Dropped the following columns:'.format(indent))
         for idx in colsWithNulls:
-            log('{}{}{}'.format(indent, indent, idx))
+            print('{}{}{}'.format(indent, indent, idx))
         df.dropna(labels = colsWithNulls
             ,axis = 'columns'
             ,inplace = True)
