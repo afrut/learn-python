@@ -321,6 +321,7 @@ def scatter(x, y
     ,fig = None
     ,figsize: tuple = (14.4, 9)
     ,axesNew: bool = False
+    ,yLim = None
     ,xname: str = None
     ,yname: str = None
     ,xscale: str = None
@@ -390,6 +391,11 @@ def scatter(x, y
             print('Invalid input shapes x = {0}, y = {1}'.format(x.shape, y.shape))
     else:
         print('Invalid input shapes x = {0}, y = {1}'.format(x.shape, y.shape))
+
+    if yLim == None:
+        pass
+    else:
+        ax.set_ylim(yLim)
             
 
     if title is None:
@@ -415,7 +421,7 @@ def scatter(x, y
     if close:
         plt.close()
 
-    return fig
+    return (fig, ax)
 
 
 
