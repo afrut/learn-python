@@ -7,11 +7,22 @@ import pandas as pd
 import math
 import dfutl
 
+def formatxticklabels(ax
+    ,horizontalalignment: str = 'right'
+    ,rotationmode: str = 'anchor'
+    ,xticklabelrotation: int = 30
+    ,xticklabelfontsize: int = 10):
+    for ticklabel in ax.get_xticklabels():
+        ticklabel.set_horizontalalignment('right')
+        ticklabel.set_rotation_mode('anchor')
+        ticklabel.set_rotation(xticklabelrotation)
+        ticklabel.set_fontsize(xticklabelfontsize)
+
+
 # ----------------------------------------
 # boxplot
 # ----------------------------------------
 def boxplot(df
-    ,fig = None
     ,figsize: tuple = (14.4, 9)
     ,title: str = None
     ,save: bool = False
@@ -19,28 +30,15 @@ def boxplot(df
     ,show: bool = False
     ,close: bool = False):
 
-    # ----------------------------------------------------------------------
-    # process inputs
-    # ----------------------------------------------------------------------
-    if fig is None:
-        fig = plt.figure(figsize = figsize)
-        ax = fig.add_subplot(1,1,1)
-    else:
-        ax = fig.get_axes()[0]
-
-    # ----------------------------------------------------------------------
-    # actual plot
-    # ----------------------------------------------------------------------
+    fig = plt.figure(figsize = figsize)
+    ax = fig.add_subplot(1,1,1)
     ax = sns.boxplot(data = df, ax = ax)
+    ax.set_title(title)
 
-    # ----------------------------------------------------------------------
-    # formatting
-    # ----------------------------------------------------------------------
-    if title is not None:
-        ax.set_title(title)
+    formatxticklabels(ax)
 
     if save:
-        if savepath[-1] == '\\':
+        if savepath is not None and savepath[-1] == '\\':
             savepath = savepath + 'boxplot.png'
         plt.savefig(savepath, format = 'png')
 
@@ -162,18 +160,14 @@ def histogram(df
                     ,tightLayout = True)
 
             # format xticklabels
-            for ticklabel in ax.get_xticklabels():
-                ticklabel.set_horizontalalignment('right')
-                ticklabel.set_rotation_mode('anchor')
-                ticklabel.set_rotation(xticklabelrotation)
-                ticklabel.set_fontsize(xlabelfontsize)
+            formatxticklabels(ax, xticklabelrotation = xticklabelrotation)
 
 
         if tightLayout:
             fig.tight_layout()
 
         if save:
-            if savepath[-1:] == '\\':
+            if savepath is not None and savepath[-1:] == '\\':
                 savepath = savepath + 'histogram.png'
             plt.savefig(savepath
                 ,format = 'png')
@@ -682,7 +676,9 @@ def stemleaf(df
     retall = '\n'.join(retall)
 
     # save if applicable
-    if save and savepath is not None:
+    if save:
+        if savepath is not None and savepath[-1] == '\\':
+            savepath = savepath + 'stemleaf.txt'
         with open(savepath, 'w') as fl:
             fl.write(retall)
 
