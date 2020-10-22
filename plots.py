@@ -57,58 +57,45 @@ def boxplot(df
 # ----------------------------------------
 # plot a histogram of certain variables
 # ----------------------------------------
+# Specification:
+# - Take Dataframe as input and plot all columns.
+# - Specify the number of bins to use between min and max.
+# - If binWidth is provided, use this to determine the number of bins instead.
 def histogram(df
-    ,fig = None
     ,figsize: tuple = (14.4, 9)
-    ,samefig: bool = True
-    ,columns: list = None
     ,numBins: int = 10
     ,binWidth: float = None
-    ,binStartVal: float = None
-    ,barwidth: float = 0.35
-    ,xlabel: str = None
-    ,xlabels: list = None
+    ,xlabel: list = None
     ,xlabelfontsize: int = 10
+    ,ylabel: list = None
     ,xticklabelrotation: int = 30
-    ,ylabel: str = None
-    ,ylabels: list = None
+    ,tightLayout = True
     ,title: str = None
-    ,tightLayout = False
     ,save: bool = False
     ,savepath: str = '.\\png\\histogram.png'
     ,show: bool = False
     ,close: bool = False):
 
-    # ----------------------------------------------------------------------
-    # process inputs
-    # ----------------------------------------------------------------------
-    if df is not None:
-        if columns is not None:
-            df = df.loc[:, columns]
-        else:
-            columns = df.columns
-        numVar = len(columns)
-    else:
-        numVar = 0
+    numVar = len(df.columns)
 
-    # ----------------------------------------------------------------------
     # infer data types of the input DataFrame
-    # ----------------------------------------------------------------------
     isNumeric = np.vectorize(lambda x: np.issubdtype(x, np.number))
     colNumeric = isNumeric(df.dtypes)
 
     # if inputs are valid
     if numVar > 0:
-        # determine the number of axes per row if all variables are
-        # to be plot on same figure
-        if(samefig):
-            axPerRow = math.sqrt(numVar)
-            ncols = int(math.ceil(axPerRow))
-            numplots = 0
-            nrows = 0
-            while numplots < numVar:
-                nrows = nrows + 1
-                numplots = nrows * ncols
+        # determine the number of rows and columns of subplots
+        # cap number of columns at 4 columns
+        ncols = min(int(math.ceil(math.sqrt(numVar))), 3)
+        numplots = 0
+        nrows = 0
+        while numplots < numVar:
+            nrows = nrows + 1
+            numplots = nrows * ncols
+
+        # Modify figsize. Every 3 plots = 9 in in height.
+        figsize = (14.4, int(nrows * 3))
+        fig = plt.figure(figsize = figsize)
 
         # loop through all variables and plot them on the corresponding axes
         for cntAx in range(0, numVar):
@@ -116,7 +103,9 @@ def histogram(df
             # get the series for which the histogram is to be made
             srs = df.iloc[:, cntAx]
 
+            # column is numeric - use histogram
             if colNumeric[cntAx]:
+
                 # ----------------------------------------
                 # infer the bins through the binWidth
                 # ----------------------------------------
@@ -124,8 +113,7 @@ def histogram(df
                     # segregate data by the thickness of each bin
                     bins = list()
                     binStopVal = srs.max() + binWidth
-                    if binStartVal is None:
-                        binStartVal = srs.min()
+                    binStartVal = srs.min()
                     bins = np.arange(binStartVal, binStopVal, binWidth)
 
                 # ----------------------------------------
@@ -136,37 +124,23 @@ def histogram(df
                     bins = np.linspace(srs.min(), srs.max(), numBins + 1)
 
                 # ----------------------------------------
-                # plot
-                # ----------------------------------------
                 # create the figure and plot
-                if not samefig:
-                    fig = plt.figure(figsize = figsize)
-                    ax = fig.add_subplot(1,1,1)
-                elif fig is None and samefig:
-                    fig = plt.figure(figsize = figsize)
-                    ax = fig.add_subplot(nrows,ncols, cntAx + 1)
-                elif fig is not None and samefig:
-                    ax = fig.add_subplot(nrows,ncols, cntAx + 1)
+                # ----------------------------------------
+                ax = fig.add_subplot(nrows,ncols, cntAx + 1)
                 lsVals, lsBins, _ = ax.hist(srs, bins = bins)
 
                 # ----------------------------------------
                 # format the plot
                 # ----------------------------------------
                 ax.set_xticks(lsBins)
-                ax.set_xticklabels(np.round(lsBins, 4), rotation = xticklabelrotation)
-                for ticklabel in ax.get_xticklabels():
-                    ticklabel.set_fontsize(xlabelfontsize)
+                ax.set_xticklabels(np.round(lsBins, 4))
                 ax.grid(linewidth = 0.5)
                 ax.set_title(title)
 
-                if xlabels is not None:
+                if xlabel is not None:
                     ax.set_xlabel(xlabels[cntAx])
-                elif xlabel is not None:
-                    ax.set_xlabel(xlabel)
-                if ylabels is not None:
+                if ylabel is not None:
                     ax.set_ylabel(ylabels[cntAx])
-                elif ylabel is not None:
-                    ax.set_ylabel(ylabel)
 
                 if title is not None:
                     ax.set_title(title)
@@ -174,18 +148,9 @@ def histogram(df
                     ax.set_title(df.columns[cntAx])
 
             else:
-                # ----------------------------------------
-                # plot
-                # ----------------------------------------
+                # column is not numeric - use barplot
                 # create the figure and plot
-                if not samefig:
-                    fig = plt.figure(figsize = figsize)
-                    ax = fig.add_subplot(1,1,1)
-                elif fig is None and samefig:
-                    fig = plt.figure(figsize = figsize)
-                    ax = fig.add_subplot(nrows,ncols, cntAx + 1)
-                elif fig is not None and samefig:
-                    ax = fig.add_subplot(nrows,ncols, cntAx + 1)
+                ax = fig.add_subplot(nrows,ncols, cntAx + 1)
                 x = np.array(list(set(srs)))
                 y = df.iloc[:, [cntAx]].groupby(df.columns[cntAx]).size()
                 barplot(x = x
@@ -195,6 +160,14 @@ def histogram(df
                     ,grid = True
                     ,title = df.columns[cntAx]
                     ,tightLayout = True)
+
+            # format xticklabels
+            for ticklabel in ax.get_xticklabels():
+                ticklabel.set_horizontalalignment('right')
+                ticklabel.set_rotation_mode('anchor')
+                ticklabel.set_rotation(xticklabelrotation)
+                ticklabel.set_fontsize(xlabelfontsize)
+
 
         if tightLayout:
             fig.tight_layout()
@@ -429,6 +402,7 @@ def scatter(x, y
 # ----------------------------------------
 # plot a bar chart with text labels
 # ----------------------------------------
+# TODO: rotation of xticklabels
 def barplot(
      x = None
     ,y = None
