@@ -7,6 +7,7 @@ import pandas as pd
 import math
 import dfutl
 
+# helper function to format xticklabels
 def formatxticklabels(ax
     ,horizontalalignment: str = 'right'
     ,rotationmode: str = 'anchor'
@@ -169,8 +170,8 @@ def histogram(df
         if save:
             if savepath is not None and savepath[-1:] == '\\':
                 savepath = savepath + 'histogram.png'
-            plt.savefig(savepath
-                ,format = 'png')
+            plt.savefig(savepath, format = 'png')
+
         if show:
             plt.show()
 
@@ -182,22 +183,23 @@ def histogram(df
 # ----------------------------------------
 # scatter matrix plot
 # ----------------------------------------
-def scattermatrix(
-     dataframe
-    ,columns: list = None
+def scattermatrix(df
     ,figsize: tuple = (14.4, 9)
+    ,title: str = None
     ,save: bool = False
     ,savepath: str = '.\\scattermatrix.png'
     ,show: bool = False
     ,close: bool = False):
 
-    if columns is None:
-        columns = dataframe.columns.tolist()
-
-    dfTemp = dataframe.loc[:, columns]
+    dfTemp = df.loc[:, dfutl.numericColumns(df)]
     fig = plt.figure(figsize = figsize)
     ax = fig.add_subplot(1,1,1)
     axes = pd.plotting.scatter_matrix(dfTemp, ax = ax)
+
+    if title is not None:
+        ax.set_title(title)
+
+    # format x and y axis labels
     for x in range(axes.shape[0]):
         for y in range(axes.shape[1]):
             ax = axes[x,y]
@@ -206,7 +208,7 @@ def scattermatrix(
             ax.yaxis.labelpad = 50
 
     if save:
-        if savepath[-1:] == '\\':
+        if savepath is not None and savepath[-1:] == '\\':
             savepath = savepath + 'scattermatrix.png'
         plt.savefig(savepath, format = 'png')
 
