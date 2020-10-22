@@ -5,7 +5,7 @@ import matplotlib.cm as cm
 import seaborn as sns
 import pandas as pd
 import math
-import stemgraphic as st
+import dfutl
 
 # ----------------------------------------
 # boxplot
@@ -624,30 +624,86 @@ def colorscatter(x, y, z
 # ----------------------------------------
 # stem and leaf plot
 # ----------------------------------------
-def stemleaf(srs
-    ,title: str = None
+def stemleaf(df
+    ,fig = None
+    ,figsize: tuple = (14.4, 9)
+    ,numBins: int = 20
     ,save: bool = False
-    ,savepath: str = '.\\stemleaf.png'
+    ,savepath: str = '.\\stemleaf.txt'
     ,show: bool = False
     ,close: bool = False):
 
-    fig, ax = st.stem_graphic(srs)
+    retall = list()
 
-    # ----------------------------------------------------------------------
-    # formatting
-    # ----------------------------------------------------------------------
-    if title is not None:
-        ax.set_title(title)
+    for col in dfutl.numericColumns(df):
+        vals = df.loc[:, col]
 
-    if save:
-        if savepath[-1] == '\\':
-            savepath = savepath + 'stemleaf.png'
-        plt.savefig(savepath, format = 'png')
+        # determine the number of stems (bins)
+        if(vals.min() == vals.max()):
+            return None
+        else:
+            # keep multiplying by 10 until the target number of bins is exceeded
+            valmin = vals.min()
+            valmax = vals.max()
+            exp10 = 0
+            while math.ceil(valmax) - math.floor(valmin) < numBins:
+                vals = vals * 10
+                exp10 = exp10 + 1
+                valmin = vals.min()
+                valmax = vals.max()
 
-    if show:
-        plt.show()
+            # infer the bin width from min and max values
+            currNBins = math.ceil(vals.max()) - math.floor(vals.min())
+            binw = math.ceil(currNBins / numBins)
 
-    if close:
-        plt.close()
+            # infer value to start binning at
+            valstart = math.floor(valmin)
 
-    return (fig, ax)
+            ## for debugging
+            #print('exp10 = {0}'.format(exp10))
+            #print('valmin = {0}'.format(valmin))
+            #print('valmax = {0}'.format(valmax))
+            #print('valstart = {0}'.format(valstart))
+            #print('binw = {0}'.format(binw))
+            #print('currNBins = {0}'.format(currNBins))
+
+            ## for debugging print the value and its inferred bin
+            #for val in vals:
+            #    print('{0} - {1}'.format(val, str((((val - valstart) // binw) * binw) + valstart)))
+
+            # determine the bin of each value
+            bins = [int((((val - valstart) // binw) * binw)) + valstart for val in vals]
+
+            # create a series object and group each value by its bin
+            srs = pd.Series(vals.astype(int))
+            grouped = srs.groupby(bins)
+
+            # for debugging - print the values in each group
+            #print(grouped.apply(lambda x: sorted([val for val in x])))
+            aggregated = grouped.apply(lambda x: sorted([str(val)[-1] for val in x]))
+
+            # determine the number of spaces for each stem
+            ndigits = math.ceil(math.log10(aggregated.index.max())) - 1
+            line = '{0: <' + str(ndigits + 1) + '}| '
+
+            # print index except last character and and the last characters of list of values
+            # associated with the index
+            idxstr = [line.format(str(idx)[0:-1]) if len(str(idx)) > 1\
+                else line.format('0')\
+                for idx in aggregated.index]
+            valstr = [''.join(vals) for vals in aggregated]
+            N = len(aggregated.index)
+            ret = [idxstr[idx] + valstr[idx] for idx in range(N)]
+
+            # build a list of every line for this column
+            ret = [line.format('x') + format('y', '<30') + 'x.y'] + ret
+            ret = ['Stem and Leaf for \'' + col + '\''] + ret
+
+            # add to overall list of strings
+            retall = retall + ret
+            retall = retall + ['\n\n']
+
+    # join each line in the list with a newline
+    retall = '\n'.join(retall)
+    print(retall)
+    return retall
