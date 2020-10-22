@@ -624,15 +624,14 @@ def colorscatter(x, y, z
 # ----------------------------------------
 # stem and leaf plot
 # ----------------------------------------
-# TODO: save to a text file
-# TODO: savepath, show, title
+# Use Case 01: Take a DataFrame and plot all columns.
+# Use Case 02: Specify maximum number of bins.
 def stemleaf(df
     ,numBins: int = 20
     ,title: str = None
     ,save: bool = False
     ,savepath: str = '.\\stemleaf.txt'
-    ,show: bool = False
-    ,close: bool = False):
+    ,show: bool = False):
 
     retall = list()
 
@@ -698,7 +697,8 @@ def stemleaf(df
 
             # build a list of every line for this column
             ret = [line.format('x') + format('y', '<30') + 'x.y'] + ret
-            ret = ['Stem and Leaf for \'' + col + '\''] + ret
+            if title is not None:
+                ret = [title + ' ' + col] + ret
 
             # add to overall list of strings
             retall = retall + ret
@@ -706,5 +706,14 @@ def stemleaf(df
 
     # join each line in the list with a newline
     retall = '\n'.join(retall)
-    print(retall)
+
+    # save if applicable
+    if save and savepath is not None:
+        with open(savepath, 'w') as fl:
+            fl.write(retall)
+
+    # show if applicable
+    if show:
+        print(retall)
+
     return retall
