@@ -624,10 +624,11 @@ def colorscatter(x, y, z
 # ----------------------------------------
 # stem and leaf plot
 # ----------------------------------------
+# TODO: save to a text file
+# TODO: savepath, show, title
 def stemleaf(df
-    ,fig = None
-    ,figsize: tuple = (14.4, 9)
     ,numBins: int = 20
+    ,title: str = None
     ,save: bool = False
     ,savepath: str = '.\\stemleaf.txt'
     ,show: bool = False
