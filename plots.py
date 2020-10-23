@@ -223,11 +223,14 @@ def scattermatrix(df
 # ----------------------------------------
 # plot a heat map
 # ----------------------------------------
+# Specification:
+# - Computes the correlation of every column wrt to every other column in the Dataframe.
+# - Set correlations to 0 when within a certain threshold.
 def heatmap(df
-    ,correlation = 0
+    ,figsize: tuple = (14.4, 9)
+    ,correlation: float = None
     ,xcolumns: list = None
     ,ycolumns: list = None
-    ,figsize: tuple = (14.4, 9)
     ,title: str = None
     ,save: bool = False
     ,savepath: str = '.\\heatmap.png'
@@ -236,44 +239,48 @@ def heatmap(df
 
     # prepare variables for rows and columns
     if xcolumns is None:
-        xcolumns = df.columns.tolist()
+        xcolumns = dfutl.numericColumns(df)
+    else:
+        xcolumns = dfutil.numericColumns(df.loc[:, xcolumns])
     if ycolumns is None:
-        ycolumns = df.columns.tolist()
+        ycolumns = dfutl.numericColumns(df)
+    else:
+        ycolumns = dfutil.numericColumns(df.loc[:, ycolumns])
 
     # calculate correlations
     dfCorr = df.corr()
     dfCorr = dfCorr.loc[xcolumns, ycolumns]
 
-    dfCorr = dfCorr.loc[xcolumns, ycolumns]
-    dfZero = pd.DataFrame(np.zeros(shape = dfCorr.shape)
-                         ,index = dfCorr.index
-                         ,columns = dfCorr.columns)
-
     # bi-directionally mask correlations that are less than a certain threshold
-    mask = dfCorr <= correlation
-    mask = mask & (dfCorr >= correlation * -1)
-    dfCorrMask = dfCorr.mask(mask, dfZero)
+    if correlation is not None:
+        mask = dfCorr <= correlation
+        mask = mask & (dfCorr >= correlation * -1)
+        dfCorrMask = dfCorr.mask(mask, 0)
+    else:
+        dfCorrMask = dfCorr
 
     # heat map of correlations
     fig = plt.figure(figsize = figsize)
     ax = fig.add_subplot(1,1,1)
-    ax = sns.heatmap(dfCorrMask, -1, 1, annot = True, annot_kws = dict([('fontsize', 6)]))
+    ax = sns.heatmap(data = dfCorrMask
+        ,vmin = -1
+        ,vmax = 1
+        ,annot = True
+        ,annot_kws = dict([('fontsize', 6)]))
     ax.set_yticks([x + 0.5 for x in range(0, len(dfCorrMask.index))])
     ax.set_yticklabels(dfCorrMask.index)
     ax.set_xticks([x + 0.5 for x in range(0, len(dfCorrMask.columns))])
     ax.set_xticklabels(dfCorrMask.columns)
-    for tick in ax.get_xticklabels():
-        tick.set_rotation(30)
-    if title is None:
+
+    formatxticklabels(ax)
+
+    if title is None and correlation is not None:
         title = 'Correlation Threshold = {0:.3f}'.format(correlation)
     ax.set_title(title)
 
     if save:
-        if savepath[-1:] == '\\':
+        if savepath is not None and savepath[-1:] == '\\':
             savepath = savepath + 'heatmap.png'
-        plt.savefig(savepath
-            ,format = 'png')
-    if save:
         plt.savefig(savepath, format = 'png')
 
     if show:
