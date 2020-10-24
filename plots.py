@@ -5,9 +5,12 @@ import matplotlib.cm as cm
 import seaborn as sns
 import pandas as pd
 import math
+from scipy import stats
 import dfutl
 
+# ----------------------------------------
 # helper function to format xticklabels
+# ----------------------------------------
 def formatxticklabels(ax
     ,horizontalalignment: str = 'right'
     ,rotationmode: str = 'anchor'
@@ -696,3 +699,87 @@ def stemleaf(df
         print(retall)
 
     return retall
+
+
+
+# ----------------------------------------
+# normal probability plot
+# ----------------------------------------
+def probplot(df
+    ,figsize: tuple = (14.4, 9)
+    ,title: str = None
+    ,save: bool = False
+    ,savepath: str = '.\\probplot.png'
+    ,show: bool = False
+    ,close: bool = False):
+
+    colNumeric = dfutl.numericColumns(df)
+    numVar = len(colNumeric)
+    df = df.loc[:, colNumeric]
+
+    # if inputs are valid
+    if numVar > 0:
+        # determine the number of rows and columns of subplots
+        # cap number of columns at 4 columns
+        ncols = min(int(math.ceil(math.sqrt(numVar))), 3)
+        numplots = 0
+        nrows = 0
+        while numplots < numVar:
+            nrows = nrows + 1
+            numplots = nrows * ncols
+
+        # Modify figsize. Every 3 plots = 9 in in height.
+        figsize = (14.4, int(nrows * 3))
+        fig = plt.figure(figsize = figsize)
+
+        # loop through all variables and plot them on the corresponding axes
+        for cntAx in range(0, numVar):
+
+            # get the series for which the histogram is to be made
+            x = df.iloc[:, cntAx].copy()
+            x.sort_values(inplace = True)
+            x.reset_index(drop = True, inplace = True)
+            n = len(x.index)
+            j = ((pd.Series(x.index) + 1) - 0.5) / n
+            jmu = j.mean()
+            jstd = j.std()
+            z = stats.norm.ppf(j, loc = jmu, scale = jstd)
+
+            # use values between the 25th and 75th percentile to plot a line
+            idx = list(range(math.ceil(0.25 * n), math.floor(0.75 * n) + 1))
+            xline = x[idx]
+            yline = z[idx]
+            m, b, _, _, _ = stats.linregress(xline, yline)
+            yreg = (m * x) + b
+
+            # add an axes to the figure
+            ax = fig.add_subplot(nrows,ncols, cntAx + 1)
+            lines1 = ax.plot(x, z, marker = 'o', linewidth = 0)
+            lines2 = ax.plot(x, yreg, color = (1, 0.325, 0.325, 1), linewidth = 2)
+
+            formatxticklabels(ax)
+            ax.set_xlabel(colNumeric[cntAx])
+            ax.set_ylabel('z', rotation = 0)
+            fig.tight_layout()
+
+
+
+
+
+
+
+
+
+
+
+        if save:
+            if savepath is not None and savepath[-1:] == '\\':
+                savepath = savepath + 'probplot.png'
+            plt.savefig(savepath, format = 'png')
+
+        if show:
+            plt.show()
+
+        if close:
+            plt.close()
+                
