@@ -65,8 +65,10 @@ def boxplot(df
 # - If binWidth is provided, use this to determine the number of bins instead.
 def histogram(df
     ,figsize: tuple = (14.4, 9)
+    ,ax = None
     ,numBins: int = 10
     ,binWidth: float = None
+    ,ylim: list = None
     ,xlabel: list = None
     ,xlabelfontsize: int = 10
     ,ylabel: list = None
@@ -79,6 +81,11 @@ def histogram(df
     ,close: bool = False):
 
     numVar = len(df.columns)
+
+    if ax is not None:
+        plotOne = True
+    else:
+        plotOne = False
 
     # infer data types of the input DataFrame
     isNumeric = np.vectorize(lambda x: np.issubdtype(x, np.number))
@@ -96,8 +103,9 @@ def histogram(df
             numplots = nrows * ncols
 
         # Modify figsize. Every 3 plots = 9 in in height.
-        figsize = (14.4, int(nrows * 3))
-        fig = plt.figure(figsize = figsize)
+        if not(plotOne):
+            figsize = (14.4, int(nrows * 3))
+            fig = plt.figure(figsize = figsize)
 
         # loop through all variables and plot them on the corresponding axes
         for cntAx in range(0, numVar):
@@ -128,7 +136,8 @@ def histogram(df
                 # ----------------------------------------
                 # create the figure and plot
                 # ----------------------------------------
-                ax = fig.add_subplot(nrows,ncols, cntAx + 1)
+                if not(plotOne):
+                    ax = fig.add_subplot(nrows,ncols, cntAx + 1)
                 lsVals, lsBins, _ = ax.hist(srs, bins = bins)
 
                 # ----------------------------------------
@@ -139,10 +148,12 @@ def histogram(df
                 ax.grid(linewidth = 0.5)
                 ax.set_title(title)
 
+                ax.set_ylim((lsVals.min(), lsVals.max()))
+
                 if xlabel is not None:
-                    ax.set_xlabel(xlabels[cntAx])
+                    ax.set_xlabel(xlabel[cntAx])
                 if ylabel is not None:
-                    ax.set_ylabel(ylabels[cntAx])
+                    ax.set_ylabel(ylabel[cntAx])
 
                 if title is not None:
                     ax.set_title(title)
@@ -166,8 +177,11 @@ def histogram(df
             # format xticklabels
             formatxticklabels(ax, xticklabelrotation = xticklabelrotation)
 
+            if plotOne:
+                break
 
-        if tightLayout:
+
+        if tightLayout and not(plotOne):
             fig.tight_layout()
 
         if save:
@@ -301,9 +315,9 @@ def scatter(x, y
     ,fig = None
     ,figsize: tuple = (14.4, 9)
     ,axesNew: bool = False
-    ,yLim = None
-    ,xname: str = None
-    ,yname: str = None
+    ,ylim = None
+    ,xlabel: str = None
+    ,ylabel: str = None
     ,xscale: str = None
     ,yscale: str = None
     ,marker: str = 'o'
@@ -372,21 +386,21 @@ def scatter(x, y
     else:
         print('Invalid input shapes x = {0}, y = {1}'.format(x.shape, y.shape))
 
-    if yLim == None:
+    if ylim == None:
         pass
     else:
-        ax.set_ylim(yLim)
+        ax.set_ylim(ylim)
             
 
     if title is None:
-        title = '{} vs {}'.format(yname, xname)
+        title = '{} vs {}'.format(ylabel, xlabel)
 
     if title is not None:
         ax.set_title(title)
-    if xname is not None:
-        ax.xaxis.label.set_text(xname)
-    if yname is not None:
-        ax.yaxis.label.set_text(yname)
+    if xlabel is not None:
+        ax.xaxis.label.set_text(xlabel)
+    if ylabel is not None:
+        ax.yaxis.label.set_text(ylabel)
     if grid:
         ax.grid(grid, linewidth = 0.5)
 
@@ -416,7 +430,7 @@ def barplot(
     ,fig = None
     ,figsize: tuple = (14.4, 9)
     ,ax = None
-    ,yLim = None
+    ,ylim = None
     ,width: float = 1
     ,xticklabels = None
     ,xlabel: str = None
@@ -481,8 +495,8 @@ def barplot(
         ax.set_ylabel(ylabel)
 
     # set y limit
-    if yLim is not None:
-        ax.set_ylim(yLim)
+    if ylim is not None:
+        ax.set_ylim(ylim)
     else:
         yMin = 0
         yMax = y.max()* 1.1
@@ -762,16 +776,6 @@ def probplot(df
             ax.set_ylabel('z', rotation = 0)
             fig.tight_layout()
 
-
-
-
-
-
-
-
-
-
-
         if save:
             if savepath is not None and savepath[-1:] == '\\':
                 savepath = savepath + 'probplot.png'
@@ -782,4 +786,3 @@ def probplot(df
 
         if close:
             plt.close()
-                
