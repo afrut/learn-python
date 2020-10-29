@@ -64,6 +64,7 @@ def boxplot(df
 # - Specify the number of bins to use between min and max.
 # - If binWidth is provided, use this to determine the number of bins instead.
 def histogram(df
+    ,fig = None
     ,figsize: tuple = (14.4, 9)
     ,ax = None
     ,numBins: int = 10
@@ -82,7 +83,7 @@ def histogram(df
 
     numVar = len(df.columns)
 
-    if ax is not None:
+    if ax is not None and fig is not None:
         plotOne = True
     else:
         plotOne = False
@@ -180,8 +181,7 @@ def histogram(df
             if plotOne:
                 break
 
-
-        if tightLayout and not(plotOne):
+        if fig is not None and tightLayout:
             fig.tight_layout()
 
         if save:
@@ -313,6 +313,7 @@ def heatmap(df
 # ----------------------------------------
 def scatter(x, y
     ,fig = None
+    ,ax = None
     ,figsize: tuple = (14.4, 9)
     ,axesNew: bool = False
     ,ylim = None
@@ -326,8 +327,9 @@ def scatter(x, y
     ,markeredgecolor: tuple = (0, 0, 0, 1)
     ,linewidth: int = 0
     ,color: tuple = (0, 0, 1, 1) # rgba
-    ,title: str = None
     ,grid: bool = False
+    ,tightLayout: bool = True
+    ,title: str = None
     ,save: bool = False
     ,savepath: str = '.\\scatterplot.png'
     ,show: bool = False
@@ -335,6 +337,8 @@ def scatter(x, y
     if fig is None:
         fig = plt.figure(figsize = figsize)
         ax = fig.add_subplot(1,1,1)
+    elif ax is not None and fig is not None:
+        pass
     elif axesNew:
         ax = fig.get_axes()[0].twinx()
     else:
