@@ -8,6 +8,20 @@ import math
 from scipy import stats
 import dfutl
 
+colors = cm.get_cmap('tab20').colors
+RED = colors[6]
+LIGHT_RED = colors[7]
+BLUE = colors[0]
+LIGHT_BLUE = colors[1]
+GREEN = colors[4]
+LIGHT_GREEN = colors[5]
+ORANGE = colors[2]
+LIGHT_ORANGE = colors[3]
+PURPLE = colors[9]
+LIGHT_PURPLE = colors[10]
+GRAY = colors[15]
+LIGHT_GRAY = colors[16]
+
 # ----------------------------------------
 # helper function to format xticklabels
 # ----------------------------------------
@@ -315,7 +329,6 @@ def scatter(x, y
     ,fig = None
     ,ax = None
     ,figsize: tuple = (14.4, 9)
-    ,axesNew: bool = False
     ,ylim = None
     ,xlabel: str = None
     ,ylabel: str = None
@@ -324,9 +337,9 @@ def scatter(x, y
     ,marker: str = 'o'
     ,markersize: int = 5
     ,markeredgewidth: float = 0.4
-    ,markeredgecolor: tuple = (0, 0, 0, 1)
+    ,markeredgecolor: tuple = RED
     ,linewidth: int = 0
-    ,color: tuple = (0, 0, 1, 1) # rgba
+    ,color: tuple = BLUE
     ,grid: bool = False
     ,tightLayout: bool = True
     ,title: str = None
@@ -339,8 +352,6 @@ def scatter(x, y
         ax = fig.add_subplot(1,1,1)
     elif ax is not None and fig is not None:
         pass
-    elif axesNew:
-        ax = fig.get_axes()[0].twinx()
     else:
         ax = fig.get_axes()[0]
 
@@ -486,7 +497,7 @@ def barplot(
     # plot a line if appropriate
     if yLine is not None:
         ax2 = ax.twinx()
-        ax2.plot(x, yLine, color = "#ff6961")
+        ax2.plot(x, yLine, color = RED)
         if yLineLabel is not None:
             ax2.set_ylabel(yLineLabel)
         if yLineLim is not None:
@@ -724,7 +735,9 @@ def stemleaf(df
 # normal probability plot
 # ----------------------------------------
 def probplot(df
+    ,fig = None
     ,figsize: tuple = (14.4, 9)
+    ,ax = None
     ,title: str = None
     ,save: bool = False
     ,savepath: str = '.\\probplot.png'
@@ -748,7 +761,13 @@ def probplot(df
 
         # Modify figsize. Every 3 plots = 9 in in height.
         figsize = (14.4, int(nrows * 3))
-        fig = plt.figure(figsize = figsize)
+        if fig is None:
+            fig = plt.figure(figsize = figsize)
+
+        if fig is not None and ax is not None:
+            plotOne = True
+        else:
+            plotOne = False
 
         # loop through all variables and plot them on the corresponding axes
         for cntAx in range(0, numVar):
@@ -761,7 +780,7 @@ def probplot(df
             j = ((pd.Series(x.index) + 1) - 0.5) / n
             jmu = j.mean()
             jstd = j.std()
-            z = stats.norm.ppf(j, loc = jmu, scale = jstd)
+            z = stats.norm.ppf(j)
 
             # use values between the 25th and 75th percentile to plot a line
             idx = list(range(math.ceil(0.25 * n), math.floor(0.75 * n) + 1))
@@ -771,14 +790,18 @@ def probplot(df
             yreg = (m * x) + b
 
             # add an axes to the figure
-            ax = fig.add_subplot(nrows,ncols, cntAx + 1)
+            if ax is None:
+                ax = fig.add_subplot(nrows,ncols, cntAx + 1)
             lines1 = ax.plot(x, z, marker = 'o', linewidth = 0)
-            lines2 = ax.plot(x, yreg, color = (1, 0.325, 0.325, 1), linewidth = 2)
+            lines2 = ax.plot(x, yreg, color = RED, linewidth = 2)
 
             formatxticklabels(ax)
             ax.set_xlabel(colNumeric[cntAx])
             ax.set_ylabel('z', rotation = 0)
             fig.tight_layout()
+
+            if plotOne:
+                break
 
         if save:
             if savepath is not None and savepath[-1:] == '\\':
