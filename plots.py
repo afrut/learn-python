@@ -332,12 +332,10 @@ def scatter(x, y
     ,ylim = None
     ,xlabel: str = None
     ,ylabel: str = None
-    ,xscale: str = None
-    ,yscale: str = None
     ,marker: str = 'o'
     ,markersize: int = 5
     ,markeredgewidth: float = 0.4
-    ,markeredgecolor: tuple = RED
+    ,markeredgecolor: tuple = BLUE
     ,linewidth: int = 0
     ,color: tuple = BLUE
     ,grid: bool = False
@@ -739,6 +737,7 @@ def probplot(df
     ,figsize: tuple = (14.4, 9)
     ,ax = None
     ,title: str = None
+    ,tightLayout: bool = True
     ,save: bool = False
     ,savepath: str = '.\\probplot.png'
     ,show: bool = False
@@ -760,7 +759,8 @@ def probplot(df
             numplots = nrows * ncols
 
         # Modify figsize. Every 3 plots = 9 in in height.
-        figsize = (14.4, int(nrows * 3))
+        if(numVar > 1):
+            figsize = (14.4, int(nrows * 3))
         if fig is None:
             fig = plt.figure(figsize = figsize)
 
@@ -798,10 +798,15 @@ def probplot(df
             formatxticklabels(ax)
             ax.set_xlabel(colNumeric[cntAx])
             ax.set_ylabel('z', rotation = 0)
-            fig.tight_layout()
 
             if plotOne:
                 break
+
+        if title is not None:
+            ax.set_title(title)
+
+        if tightLayout:
+            fig.tight_layout()
 
         if save:
             if savepath is not None and savepath[-1:] == '\\':
