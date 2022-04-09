@@ -13,13 +13,16 @@ def intToChar16(x: int):
     return int.to_bytes(x, 2, byteorder).decode("utf-16")
 
 # Remove all unicode characters by attempting to encode into ascii
-def toAsciiReplace(x: str) -> tuple:
+def stripUnicode(x: str) -> tuple:
+
     # Try to encode to ascii
-    _bytes = x.encode("ascii", errors = "xmlcharrefreplace")
+    strAscii = x.encode("ascii", errors = "xmlcharrefreplace").decode("ascii")
+    N = len(strAscii)
+
 
     # Find all instances of replaced characters
-    prog = re.compile("&#(\d+); ?")
-    result = list(re.finditer(prog, str3))
+    prog = re.compile("&#(\d+);")
+    result = list(re.finditer(prog, strAscii))
 
     # For all matches, store the character, their locations and remove from
     # original string
@@ -38,12 +41,13 @@ def toAsciiReplace(x: str) -> tuple:
         lsInd.append((mch.start(), mch.end()))
 
         # Slice original string to obtain string without unicode characters.
-        str4 = str4 + str3[i:mch.start()]
+        retStr = retStr + strAscii[i:mch.start()]
 
         # Update the start of the next slice to be the end of the current regex match.
         i = mch.end()
+    retStr = retStr + strAscii[i:N]
 
-    return (str4, tuple(lsChars), tuple(lsInd))
+    return (retStr, tuple(lsChars), tuple(lsInd))
 
 
 if __name__ == "__main__":
@@ -140,7 +144,7 @@ if __name__ == "__main__":
     # ------------------------------
     # Replacing with HTML numeric code is better
     # ------------------------------
-    # See toAsciiReplace() for a function that does similar things.
+    # See stripUnicode() for a function that does similar things.
     # The pattern is "&#(int);". The unicode character can be retrieved from this
     # int by converting it to bytes in little endian endian and
     # decoding it using utf-16. See intToChar16().
@@ -182,3 +186,28 @@ if __name__ == "__main__":
 
     # Purged cached regular expression that were passed to re.compile().
     re.purge()
+
+    print("")
+
+    # ----------------------------------------
+    # Open a file, read line by line, and strip all of its unicode characters
+    # ----------------------------------------
+    print("----------------------------------------------------------------------")
+    print("  File Processing ")
+    print("----------------------------------------------------------------------")
+    with open(".\\resources\\a-scandal-in-bohemia.txt", "r", encoding = "utf-8") as fl:
+        while True:
+            # Read one line
+            line = fl.readline()
+
+            # If the line is not empty
+            if len(line) > 0:
+                if line == "\n":
+                    # Do nothing if it is only newline
+                    pass
+                else:
+                    # Print line but don't include newline character
+                    line2, chars, idxs = stripUnicode(line)
+                    print(line2, end = "")
+            else:
+                break
