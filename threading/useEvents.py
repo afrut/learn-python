@@ -34,14 +34,17 @@ if __name__ == "__main__":
         stopEvent = threading.Event()
         threads[tpl[0]] = (threading.Thread(target = func, args = (tpl[0], tpl[1], stopEvent)), stopEvent)
 
-    for threadName in threads:
-        threads[threadName][0].start()
+    # Start all therads
+    for _, tpl in threads.items():
+        tpl[0].start()
 
+    # Sleep for 3 seconds then stop all threads
     time.sleep(3)
-    for threadName in threads:
-        threads[threadName][1].set()
+    for _, tpl in threads.items():
+        tpl[1].set()
 
-    for threadName in threads:
-        threads[threadName][0].join()
+    # Wait for all threads to complete
+    for _, tpl in threads.items():
+        tpl[0].join()
 
     logging.info(f"*** All done. ***")
