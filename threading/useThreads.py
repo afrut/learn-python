@@ -1,4 +1,4 @@
-#python useThreads.py
+#python threading\\useThreads.py
 import logging
 import time
 import threading
@@ -37,3 +37,6 @@ if __name__ == "__main__":
     # Wait for a thread to complete. If this is not here, thread toast will not
     # complete since it is a daemon thread. Thread bacon still does not complete.
     threads["toast"].join()
+
+    # Note that thread bacon does not complete but terminates because the main
+    # thread completes.
