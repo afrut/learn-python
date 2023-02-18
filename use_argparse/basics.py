@@ -1,8 +1,11 @@
-#python useArgparse.py foo 3 --required foo --optional val1 --optionalFlag -of2 --restrictedOption a
-#python useArgparse.py foo 3 --required foo --optional val1 --optionalFlag -of2 --restrictedOption a --optionalWithDefault
-#python useArgparse.py foo 3 --required foo --optional val1 --optionalFlag -of2 --restrictedOption a --optionalWithDefault someValue
+#python basics.py foo 3 --required foo --optional val1 --optionalFlag -of2 --restrictedOption a
+#python basics.py foo 3 --required foo --optional val1 --optionalFlag -of2 --restrictedOption a --optionalWithDefault
+#python basics.py foo 3 --required foo --optional val1 --optionalFlag -of2 --restrictedOption a --optionalWithDefault someValue
 import subprocess as sp
 import argparse
+
+
+    
 if __name__ == "__main__":
     sp.call("cls", shell = True)
     parser = argparse.ArgumentParser()
