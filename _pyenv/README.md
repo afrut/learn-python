@@ -35,6 +35,14 @@
   ```
   pyenv local 3.10.4
   ```
+- See currently active version
+  ```
+  pyenv version
+  ```
+- See all versions
+  ```
+  pyenv versions
+  ```
 - Uninstall 3.10.4
   ```
   pyenv uninstall 3.10.4
