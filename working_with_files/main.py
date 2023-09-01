@@ -4,17 +4,36 @@ import os
 import pathlib
 import shutil
 import stat # To interpret results of os.stat()
+import sys
 from datetime import datetime as dt
+from typing import List
 if __name__ == "__main__":
-    file_path = ".\\resources"
+    print("----------------------------------------")
+    print("  Basics")
+    print("----------------------------------------")
+    # Get full path of this file
+    # abspath resolves things like "." and ".." in the string passed in
+    this_file_path: str = os.path.abspath(__file__)
 
-    # Get full path of a directory
-    dir_path = os.path.abspath(".")
-    print(f"Full path of this directory: {dir_path}", end = "\n")
+    # Get directory of this file
+    this_file_dir: str = os.path.dirname(__file__)
+
+    # Get the full path of a file or directory, resolving symlinks if the OS
+    # supports it
+    resources_path: str = os.path.realpath(f"{this_file_dir}\\resources")
+
+    # Get the root directory of the repository
+    repo_root_path: str = os.path.abspath(f"{this_file_dir}\\..")
 
     # Append to a path
-    file_name = os.path.join(file_path, "plaintext.txt")
+    file_name: str = os.path.join(resources_path, "plaintext.txt")
+
+    print(f"this_file_path = {this_file_path}")
+    print(f"this_file_dir = {this_file_dir}")
+    print(f"resources_path = {resources_path}")
+    print(f"repo_root_path = {repo_root_path}")
     print(f"file_name = {file_name}")
+    print("\n\n")
 
     # Read file contents as text
     fl = open(file_name, "rt")
@@ -25,19 +44,30 @@ if __name__ == "__main__":
     print(contents, end = "\n\n\n")
     fl.close()
 
-    # Write text t file
+    # Write text to a file
     some_str = "some trivial content"
+    output_file_path: str = os.path.join(resources_path, "deleteme.txt")
     # with closes file after block ends
-    with open(os.path.join(file_path, "deleteme.txt"), "wt") as fl:
+    with open(output_file_path, "wt") as fl:
         fl.write(some_str)
+    with open(output_file_path, "rt") as fl:
+        print("----------------------------------------")
+        print(f"  Contents of {output_file_path}")
+        print("----------------------------------------")
+        print(fl.read())
+    print("\n\n")
 
-    # Get a list of all files in a directory using os.listdir()
+    # Get a list of all top-level files in a directory using os.listdir()
     # os.listdir() is for legacy versions
     dirs = []
     files = []
-    for p in os.listdir(dir_path):
+    dir_contents: List[str] = os.listdir(repo_root_path)
+    print("----------------------------------------")
+    print("  os.listdir()")
+    print("----------------------------------------")
+    for p in dir_contents:
         # Full path of file
-        full_path = os.path.join(dir_path, p)
+        full_path = os.path.join(repo_root_path, p)
 
         # Append to different lists depending on whether or not the target is a
         # file or directory
@@ -45,12 +75,17 @@ if __name__ == "__main__":
             files.append(full_path)
         if os.path.isdir(full_path):
             dirs.append(full_path)
+    print("Directories:")
+    list(map(lambda x: print(f"    {x}"), sorted(dirs))) # print contents of list
+    print("Files:")
+    list(map(lambda x: print(f"    {x}"), sorted(files)))
+    sys.exit()
 
     # Get a list of all files in a directory using os.scandir()
     # os.scandir() returns an Iterator[nt.DirEntry]
     dirs.clear()
     files.clear()
-    for dir_entry in os.scandir(dir_path):
+    for dir_entry in os.scandir(repo_root_path):
         if dir_entry.is_dir():
             dirs.append(dir_entry.path)
         if dir_entry.is_file():
@@ -76,7 +111,7 @@ if __name__ == "__main__":
             files.append(p)
 
     # Get file attributes
-    info = os.stat(os.path.join(dir_path, "main.py"))
+    info = os.stat(os.path.join(repo_root_path, "main.py"))
     mode = info.st_mode
     print(f"S_ISDIR = {stat.S_ISDIR(mode)}")                # file is a directory
     print(f"S_ISREG = {stat.S_ISREG(mode)}")                # file is a regular file
@@ -107,5 +142,3 @@ if __name__ == "__main__":
     # glob.iglob
     # pathlib.Path.glob
     # os.walk
-    # os.path.dirname
-    # os.path.realpath
