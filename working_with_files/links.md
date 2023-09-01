@@ -1,3 +1,4 @@
 - (Documentation for os module)[https://docs.python.org/3/library/os.html]
 - (Documenation for os.path module)[https://docs.python.org/3/library/os.path.html]
 - (Documentation for pathlib module)[https://docs.python.org/3/library/pathlib.html]
+- (Documentation for stat module)[https://docs.python.org/3/library/stat.html]
