@@ -3,6 +3,8 @@
 import os
 import pathlib
 import shutil
+import stat # To interpret results of os.stat()
+from datetime import datetime as dt
 if __name__ == "__main__":
     file_path = ".\\resources"
 
@@ -29,8 +31,8 @@ if __name__ == "__main__":
     with open(os.path.join(file_path, "deleteme.txt"), "wt") as fl:
         fl.write(some_str)
 
-    # Get a list of all files in a directory
-    # listdir is for legacy versions
+    # Get a list of all files in a directory using os.listdir()
+    # os.listdir() is for legacy versions
     dirs = []
     files = []
     for p in os.listdir(dir_path):
@@ -44,6 +46,7 @@ if __name__ == "__main__":
         if os.path.isdir(full_path):
             dirs.append(full_path)
 
+    # Get a list of all files in a directory using os.scandir()
     # os.scandir() returns an Iterator[nt.DirEntry]
     dirs.clear()
     files.clear()
@@ -60,7 +63,7 @@ if __name__ == "__main__":
         # print(f"    is_symlink(): {dir_entry.is_symlink()}")
         # print(f"    stat(): {dir_entry.stat()}")
 
-    # The same can be achieved with the pathlib.Path
+    # Get a list of all files in d adirectory using pathlib
     # pathlib.Path().iterdir() returns a generator whose elements are either
     # PosixPath or WindowsPath
     dirs.clear()
@@ -72,12 +75,21 @@ if __name__ == "__main__":
         if p.is_file():
             files.append(p)
 
-    # Get last modified time of single file in seconds
+    # Get file attributes
     info = os.stat(os.path.join(dir_path, "main.py"))
-    print(info)
+    mode = info.st_mode
+    print(f"S_ISDIR = {stat.S_ISDIR(mode)}")                # file is a directory
+    print(f"S_ISREG = {stat.S_ISREG(mode)}")                # file is a regular file
+    print(f"ST_SIZE = {info.st_size}")                      # size of the file in bytes
+    print(f"ST_ATIME = {dt.fromtimestamp(info.st_atime)}")  # time of last access
+    print(f"ST_MTIME = {dt.fromtimestamp(info.st_mtime)}")  # time of last modification
+    print(f"ST_CTIME = {dt.fromtimestamp(info.st_ctime)}")  # creation time on windows/metadata change time on other systems like Unix
+
+    # Get all files in directory and print most recently modified file
+    files = [os.scandir("..")]
 
 
-    # TODO: get last modified time of a file
+
     # TODO: get all files in directory sorted by most recent last modified time
     # first
     # TODO: print all files in directory ordered by most recent time first
