@@ -79,24 +79,35 @@ if __name__ == "__main__":
     list(map(lambda x: print(f"    {x}"), sorted(dirs))) # print contents of list
     print("Files:")
     list(map(lambda x: print(f"    {x}"), sorted(files)))
-    sys.exit()
+    print("\n\n")
 
     # Get a list of all files in a directory using os.scandir()
-    # os.scandir() returns an Iterator[nt.DirEntry]
-    dirs.clear()
-    files.clear()
-    for dir_entry in os.scandir(repo_root_path):
-        if dir_entry.is_dir():
-            dirs.append(dir_entry.path)
-        if dir_entry.is_file():
-            files.append(dir_entry.path)
-        # print(f"    name: {dir_entry.name}")
-        # print(f"    path: {dir_entry.path}")
-        # print(f"    inode(): {dir_entry.inode()}")
-        # print(f"    is_dir(): {dir_entry.is_dir()}")
-        # print(f"    is_file(): {dir_entry.is_file()}")
-        # print(f"    is_symlink(): {dir_entry.is_symlink()}")
-        # print(f"    stat(): {dir_entry.stat()}")
+    # os.scandir() returns nt.ScandirIterator. Each element is type nt.DirEntry.
+    # Prefer this over os.listdir(). Useful when the properties of each file
+    # needs to be inspected in some way
+    print("----------------------------------------")
+    print("  os.scandir()")
+    print("----------------------------------------")
+    dir_contents = os.scandir(repo_root_path)
+    results = []
+    for p in os.scandir(repo_root_path):
+        results.append(p)
+    files = list(filter(lambda x: True if x.is_file() else False, results))
+    dirs = list(filter(lambda x: True if x.is_dir() else False, results))
+    print("Directories:")
+    list(map(lambda x: print(f"    {x.path}"), sorted(dirs, key = lambda x: x.path)))
+    print("Files:")
+    list(map(lambda x: print(f"    {x.path}"), sorted(files, key = lambda x: x.path)))
+    print("\n\n")
+    # Other attributes that can be accessed
+    # print(f"    name: {dir_entry.name}")
+    # print(f"    path: {dir_entry.path}")
+    # print(f"    inode(): {dir_entry.inode()}")
+    # print(f"    is_dir(): {dir_entry.is_dir()}")
+    # print(f"    is_file(): {dir_entry.is_file()}")
+    # print(f"    is_symlink(): {dir_entry.is_symlink()}")
+    # print(f"    stat(): {dir_entry.stat()}")
+    sys.exit()
 
     # Get a list of all files in d adirectory using pathlib
     # pathlib.Path().iterdir() returns a generator whose elements are either
@@ -127,7 +138,7 @@ if __name__ == "__main__":
 
     # TODO: get all files in directory sorted by most recent last modified time
     # first
-    # TODO: print all files in directory ordered by most recent time first
+    # TODO : print all files in directory ordered by most recent time first
 
 
 
@@ -135,7 +146,7 @@ if __name__ == "__main__":
     # pathlib.Path.iterdir()[0].stat()
     # os.mkdir()
     # pathlib.Path.mkdir()
-    # os.makedirs()
+    # os.makedirs ()
     # pathlib.Path.mkdir(parents = True)
     # fnmatch.fnmatch
     # glob.glob
