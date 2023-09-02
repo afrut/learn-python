@@ -6,7 +6,7 @@ import shutil
 import stat # To interpret results of os.stat()
 import sys
 from datetime import datetime as dt
-from typing import List
+from typing import List, Generator
 if __name__ == "__main__":
     print("----------------------------------------")
     print("  Basics")
@@ -92,8 +92,8 @@ if __name__ == "__main__":
     results = []
     for p in os.scandir(repo_root_path):
         results.append(p)
-    files = list(filter(lambda x: True if x.is_file() else False, results))
-    dirs = list(filter(lambda x: True if x.is_dir() else False, results))
+    files = list(filter(lambda x: x.is_file(), results))
+    dirs = list(filter(lambda x: x.is_dir(), results))
     print("Directories:")
     list(map(lambda x: print(f"    {x.path}"), sorted(dirs, key = lambda x: x.path)))
     print("Files:")
@@ -107,19 +107,23 @@ if __name__ == "__main__":
     # print(f"    is_file(): {dir_entry.is_file()}")
     # print(f"    is_symlink(): {dir_entry.is_symlink()}")
     # print(f"    stat(): {dir_entry.stat()}")
-    sys.exit()
 
-    # Get a list of all files in d adirectory using pathlib
+    # Get a list of all files in a directory using pathlib
     # pathlib.Path().iterdir() returns a generator whose elements are either
     # PosixPath or WindowsPath
-    dirs.clear()
-    files.clear()
-    for p in pathlib.Path("..").iterdir():
-        # See documentation for PurePath/Path for methods and properties.
-        if p.is_dir():
-            dirs.append(p)
-        if p.is_file():
-            files.append(p)
+    print("----------------------------------------")
+    print("  pathlib.Path().iterdir()")
+    print("----------------------------------------")
+    results: Generator[pathlib.WindowsPath, None, None] = pathlib.Path(repo_root_path).iterdir()
+    results: List[pathlib.WindowsPath] = list(results)
+    dirs = filter(lambda x: x.is_dir(), results)
+    files = filter(lambda x: x.is_file(), results)
+    print("Directories:")
+    list(map(lambda x: print(f"    {x}"), sorted(dirs)))
+    print("Files:")
+    list(map(lambda x: print(f"    {x}"), sorted(files)))
+    print("\n\n")
+    # See documentation for PurePath/Path for more methods and properties.
 
     # Get file attributes
     info = os.stat(os.path.join(repo_root_path, "main.py"))
