@@ -125,29 +125,32 @@ if __name__ == "__main__":
     print("\n\n")
     # See documentation for PurePath/Path for more methods and properties.
 
+    print("----------------------------------------")
+    print("  File Attributes")
+    print("----------------------------------------")
     # Get file attributes
-    info = os.stat(os.path.join(repo_root_path, "main.py"))
+    info = os.stat(this_file_path)
     mode = info.st_mode
-    print(f"S_ISDIR = {stat.S_ISDIR(mode)}")                # file is a directory
-    print(f"S_ISREG = {stat.S_ISREG(mode)}")                # file is a regular file
-    print(f"ST_SIZE = {info.st_size}")                      # size of the file in bytes
-    print(f"ST_ATIME = {dt.fromtimestamp(info.st_atime)}")  # time of last access
-    print(f"ST_MTIME = {dt.fromtimestamp(info.st_mtime)}")  # time of last modification
-    print(f"ST_CTIME = {dt.fromtimestamp(info.st_ctime)}")  # creation time on windows/metadata change time on other systems like Unix
+    print(f"Attributes of {this_file_path}")
+    print(f"    S_ISDIR = {stat.S_ISDIR(mode)}")                # file is a directory
+    print(f"    S_ISREG = {stat.S_ISREG(mode)}")                # file is a regular file
+    print(f"    ST_SIZE = {info.st_size}")                      # size of the file in bytes
+    print(f"    ST_ATIME = {dt.fromtimestamp(info.st_atime)}")  # time of last access
+    print(f"    ST_MTIME = {dt.fromtimestamp(info.st_mtime)}")  # time of last modification
+    print(f"    ST_CTIME = {dt.fromtimestamp(info.st_ctime)}")  # creation time on windows/metadata change time on other systems like Unix
+    print("\n\n")
 
+    print("----------------------------------------")
+    print("  List files in descending order of modified time")
+    print("----------------------------------------")
     # Get all files in directory and print most recently modified file
-    files = [os.scandir("..")]
+    results: List[pathlib.WindowsPath] = list(pathlib.Path(repo_root_path).iterdir())
+    files = list(filter(lambda x: x.is_file(), results))
+    files_sorted = sorted(files, key = lambda x: x.stat().st_mtime, reverse = True)
+    list(map(lambda x: print(f"    {dt.fromtimestamp(x.stat().st_mtime)}, {x}"), files_sorted))
 
 
 
-    # TODO: get all files in directory sorted by most recent last modified time
-    # first
-    # TODO : print all files in directory ordered by most recent time first
-
-
-
-    # os.scandir()[0].stat().st_mtime
-    # pathlib.Path.iterdir()[0].stat()
     # os.mkdir()
     # pathlib.Path.mkdir()
     # os.makedirs ()
