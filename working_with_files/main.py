@@ -13,7 +13,7 @@ from functools import reduce
 def os_walk_print(g: Generator[Tuple[str, List[str], List[str]], None, None],
                   depth: int = 0,
                   space: str = "    ",
-                  ignore_dirs: Set[str] = None,
+                  ignore: Set[str] = None,
                   output: str = "./os_walk/output.txt"):
     """
     A function that takes the generator returned by os.walk and prints results
@@ -25,26 +25,26 @@ def os_walk_print(g: Generator[Tuple[str, List[str], List[str]], None, None],
         files = node[2]
 
         # Handle no ignore list
-        if not ignore_dirs:
-            ignore_dirs = set()
+        if not ignore:
+            ignore = set()
+
+        # Compute indentation
+        prefix = ""
+        for _ in range(depth):
+            prefix = f"{prefix}|{space}"
+
+        # Buffer lines in a list before writing
+        lines = []
 
         # Check if directory should be ignored
-        ignore = False
-        for dir in ignore_dirs:
-            # if directory.startswith(dir) or\
-            #     directory.endswith(dir):
+        skip = False
+        for dir in ignore:
             if directory.startswith(dir):
-                ignore = True
+                skip = True
                 break
 
-        if not ignore:
-            # Compute indentation
-            prefix = ""
-            for _ in range(depth):
-                prefix = f"{prefix}|{space}"
-
-            # Buffer lines in a list before writing
-            # Path of current directory
+        # Path of current directory
+        if not skip:
             lines = [f"{prefix}{directory}\n"]
 
             # Add one more level of indentation for children
@@ -53,16 +53,16 @@ def os_walk_print(g: Generator[Tuple[str, List[str], List[str]], None, None],
                 for file in files:
                     lines.append(f"{prefix}{file}\n")
 
-            # Output to file
-            mode = "at"
-            if depth == 0:
-                mode = "wt"
-            with open(output, mode) as fl:
-                fl.writelines(lines)
+        # Output to file
+        mode = "at"
+        if depth == 0:
+            mode = "wt"
+        with open(output, mode) as fl:
+            fl.writelines(lines)
 
         # Recursively call on child directories
         for _ in directories:
-            os_walk_print(g, depth = depth + 1, ignore_dirs = ignore_dirs)
+            os_walk_print(g, depth = depth + 1, ignore = ignore)
     except StopIteration:
         # No more nodes to process
         pass
@@ -217,21 +217,27 @@ if __name__ == "__main__":
     # ret[0]: str - full path
     # ret[1]: List[str] - names of directory in path ret[0]
     # ret[2]: List[str] - file names in path ret[0]
+    # List of directories to ignore
+    ignore_dirs = {
+        f"{repo_root_path}\\.git",
+        f"{repo_root_path}\\__pycache__",
+        f"{repo_root_path}\\**\\env",
+        f"{repo_root_path}\\.vscode",
+    }
+
+    # Globbed set of directories and files to ignore
+    ignore = [set(glob.glob(dir)) for dir in ignore_dirs]
+
+    # Consolidate all files and directories into a single set
+    ignore = reduce(lambda x, y: x.union(y), ignore)
+    print(ignore)
+
+    # Traverse directory and subdirectories and write output to text file
     g = os.walk(repo_root_path)
-    os_walk_print(g,
-        ignore_dirs = {
-            r"D:\src\learn-python\.git",
-            r"D:\src\learn-python\__pycache__",
-            r"env"
-        })
-    # for tpl in g:
-    #     print(f"{directory_path}")
-    #     directory_path = tpl[0]
-    #     directories = tpl[1]
-    #     files = tpl[2]
-
-
+    os_walk_print(g, ignore = ignore)
     sys.exit()
+
+
     # list(map(lambda x: print(f"    {x[0]}"), os.walk(repo_root_path)))
     # print(type(os.walk(repo_root_path)))
     results = os.walk(repo_root_path)
