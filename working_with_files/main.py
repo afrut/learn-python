@@ -16,7 +16,8 @@ def os_walk_print(g: Generator[Tuple[str, List[str], List[str]], None, None],
                   ignore: Set[str] = None,
                   output: str = "./os_walk/output.txt"):
     """
-    A function that takes the generator returned by os.walk and prints results
+    A function that takes the generator returned by os.walk and writes results
+    to a file
     """
     try:
         node: Tuple[str, List[str], List[str]] = next(g)
