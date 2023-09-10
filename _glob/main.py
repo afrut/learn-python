@@ -27,7 +27,13 @@ if __name__ == "__main__":
     print("")
 
     # All files and subdirectories in a directory and it subdirectories
-    pattern = f"{repo_root}\\**"
+    pattern = f"{repo_root}\\.git\\**"
+    print(pattern)
+    list(map(lambda x: print(f"    {x}"), sorted(glob.glob(pattern, recursive = True))))
+    print("")
+
+    # All files and subdirectories of subdirectories named env anywhere in the path
+    pattern = f"{repo_root}\\**\\env\\**"
     print(pattern)
     list(map(lambda x: print(f"    {x}"), sorted(glob.glob(pattern, recursive = True))))
     print("")

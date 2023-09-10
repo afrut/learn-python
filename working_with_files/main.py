@@ -5,8 +5,68 @@ import pathlib
 import shutil
 import stat # To interpret results of os.stat()
 import sys
+import glob
 from datetime import datetime as dt
-from typing import List, Generator
+from typing import List, Generator, Tuple, Set
+from functools import reduce
+
+def os_walk_print(g: Generator[Tuple[str, List[str], List[str]], None, None],
+                  depth: int = 0,
+                  space: str = "    ",
+                  ignore_dirs: Set[str] = None,
+                  output: str = "./os_walk/output.txt"):
+    """
+    A function that takes the generator returned by os.walk and prints results
+    """
+    try:
+        node: Tuple[str, List[str], List[str]] = next(g)
+        directory = node[0]
+        directories = node[1]
+        files = node[2]
+
+        # Handle no ignore list
+        if not ignore_dirs:
+            ignore_dirs = set()
+
+        # Check if directory should be ignored
+        ignore = False
+        for dir in ignore_dirs:
+            # if directory.startswith(dir) or\
+            #     directory.endswith(dir):
+            if directory.startswith(dir):
+                ignore = True
+                break
+
+        if not ignore:
+            # Compute indentation
+            prefix = ""
+            for _ in range(depth):
+                prefix = f"{prefix}|{space}"
+
+            # Buffer lines in a list before writing
+            # Path of current directory
+            lines = [f"{prefix}{directory}\n"]
+
+            # Add one more level of indentation for children
+            prefix = f"{prefix}|{space}"
+            if files:
+                for file in files:
+                    lines.append(f"{prefix}{file}\n")
+
+            # Output to file
+            mode = "at"
+            if depth == 0:
+                mode = "wt"
+            with open(output, mode) as fl:
+                fl.writelines(lines)
+
+        # Recursively call on child directories
+        for _ in directories:
+            os_walk_print(g, depth = depth + 1, ignore_dirs = ignore_dirs)
+    except StopIteration:
+        # No more nodes to process
+        pass
+
 if __name__ == "__main__":
     print("----------------------------------------")
     print("  Basics")
@@ -148,13 +208,70 @@ if __name__ == "__main__":
     files = list(filter(lambda x: x.is_file(), results))
     files_sorted = sorted(files, key = lambda x: x.stat().st_mtime, reverse = True)
     list(map(lambda x: print(f"    {dt.fromtimestamp(x.stat().st_mtime)}, {x}"), files_sorted))
+    print("\n\n")
+
+    print("----------------------------------------")
+    print("  Recursively list files in a directory")
+    print("----------------------------------------")
+    # os.walk() returns a generator that yields a tuple
+    # ret[0]: str - full path
+    # ret[1]: List[str] - names of directory in path ret[0]
+    # ret[2]: List[str] - file names in path ret[0]
+    g = os.walk(repo_root_path)
+    os_walk_print(g,
+        ignore_dirs = {
+            r"D:\src\learn-python\.git",
+            r"D:\src\learn-python\__pycache__",
+            r"env"
+        })
+    # for tpl in g:
+    #     print(f"{directory_path}")
+    #     directory_path = tpl[0]
+    #     directories = tpl[1]
+    #     files = tpl[2]
+
+
+    sys.exit()
+    # list(map(lambda x: print(f"    {x[0]}"), os.walk(repo_root_path)))
+    # print(type(os.walk(repo_root_path)))
+    results = os.walk(repo_root_path)
+    for _ in range(2):
+        x = next(results)
+        print(x)
+        print(type(x))
+
+    print("----------------------------------------")
+    print("  Pattern matching filenames")
+    print("----------------------------------------")
+    results: List[pathlib.WindowsPath] = list(pathlib.Path(repo_root_path).iterdir())
 
 
 
-    # os.mkdir()
-    # pathlib.Path.mkdir()
+
+    print("----------------------------------------")
+    print("  Directories")
+    print("----------------------------------------")
+    os_mkdir = f"{this_file_dir}\\os_mkdir"
+    pathlib_mkdir = f"{this_file_dir}\\pathlib_mkdir"
+    os_makedirs = f"{this_file_dir}\\os\\make\\dirs"
+    pathlib_makedirs = f"{this_file_dir}\\path\\lib\\make\\dirs"
+
+    # Create directories
+    try:
+        os.mkdir(os_mkdir)
+        os.makedirs(os_makedirs)
+    except FileExistsError:
+        print(f"Directory {os_mkdir} already exists.")
+    pathlib.Path(pathlib_mkdir).mkdir(exist_ok = True)
+    pathlib.Path(pathlib_makedirs).mkdir(parents = True, exist_ok = True)
+
+    # Check that directories are created
+
+
+    # os.rmdir()
     # os.makedirs ()
     # pathlib.Path.mkdir(parents = True)
+
     # fnmatch.fnmatch
     # glob.glob
     # glob.iglob
