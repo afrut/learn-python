@@ -231,7 +231,6 @@ if __name__ == "__main__":
 
     # Consolidate all files and directories into a single set
     ignore = reduce(lambda x, y: x.union(y), ignore)
-    print(ignore)
 
     # Traverse directory and subdirectories and write output to text file
     g = os.walk(repo_root_path)
