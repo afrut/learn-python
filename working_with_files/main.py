@@ -16,8 +16,14 @@ def os_walk_print(g: Generator[Tuple[str, List[str], List[str]], None, None],
                   ignore: Set[str] = None,
                   output: str = "./os_walk/output.txt"):
     """
-    A function that takes the generator returned by os.walk and writes results
+    A recursive function that takes the generator returned by os.walk and writes results
     to a file
+    Parameters
+        - g: Generator returned by os.walk()
+        - depth: Current depth in the filesystem tree
+        - space: The number of spaces used to indent children
+        - ignore: Set of glob-compatible strings used to specify an ignore list
+        - output: Write results to this file
     """
     try:
         node: Tuple[str, List[str], List[str]] = next(g)
