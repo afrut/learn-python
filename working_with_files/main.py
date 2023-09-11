@@ -52,13 +52,17 @@ def os_walk_print(g: Generator[Tuple[str, List[str], List[str]], None, None],
 
         # Path of current directory
         if not skip:
-            lines = [f"{prefix}{directory}\n"]
+            curr_dir = f"{prefix}{directory}"
+            lines = [f"{curr_dir}\n"]
+            print(curr_dir)
 
             # Add one more level of indentation for children
             prefix = f"{prefix}|{space}"
             if files:
                 for file in files:
-                    lines.append(f"{prefix}{file}\n")
+                    file = f"{prefix}{file}"
+                    lines.append(f"{file}\n")
+                    print(file)
 
         # Output to file
         mode = "at"
