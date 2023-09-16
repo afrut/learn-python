@@ -36,12 +36,18 @@ import my_package.sub_package.sub_package_module as spm2
 # Import names in a submodule inside a subpackage
 from my_package.sub_package.sub_package_module import spm_foo
 
+# Import a submodule that uses relative imports
+from my_package.sub_package.use_relative_imports import foo, bar, baz
+
 if __name__ == "__main__":
     m.add(2, 3) # Run a function from an imported module
     m.some_global_var + 3 # Access a global variable in an imported module
     dir(m)  # See the names that a module defines
     dir() # See names defined currently
     dir(builtins) # See builtin/default names/keywords/functions/etc
+
+    # Use names from a submodule that uses relative imports
+    foo(); bar(); baz()
     
     # ----------------------------------------
     #  Import search paths
