@@ -23,6 +23,19 @@ importlib.reload(m)
 import sys
 import builtins
 
+# Import a variable defined in a package
+from my_package import package_var
+
+# Import a module defined in a package
+from my_package import package_module as pm
+
+# Import a sub-package defined in a package
+from my_package.sub_package import sub_package_module as spm
+import my_package.sub_package.sub_package_module as spm2
+
+# Import names in a submodule inside a subpackage
+from my_package.sub_package.sub_package_module import spm_foo
+
 if __name__ == "__main__":
     m.add(2, 3) # Run a function from an imported module
     m.some_global_var + 3 # Access a global variable in an imported module
@@ -38,3 +51,6 @@ if __name__ == "__main__":
 
     # If not found, then this path is searched next
     sys.path
+
+    # Access a name in a module inside a package
+    pm.package_module_foo()
