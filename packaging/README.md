@@ -31,3 +31,12 @@
 - *pipenv* is a project-level dependency management tool. It manages package
   installations, dependencies, and virtual environments for a given project.
 - *pyenv* can be used to manage python versions. See _pyenv.
+
+# Links
+- [Packaging Guide](https://packaging.python.org/en/latest/)
+- [Packaging Overview](https://packaging.python.org/en/latest/overview/)
+- [Installation guide](https://packaging.python.org/en/latest/tutorials/installing-packages/)
+- [Installing standalone command line tools](https://packaging.python.org/en/latest/guides/installing-stand-alone-command-line-tools/)
+- [Managing dependencies](https://packaging.python.org/en/latest/tutorials/managing-dependencies/#managing-dependencies)
+- [Packaging Python projects](https://packaging.python.org/en/latest/tutorials/packaging-projects/#)
+- [Packaging and distributing projects](https://packaging.python.org/en/latest/guides/distributing-packages-using-setuptools/#distributing-packages)
