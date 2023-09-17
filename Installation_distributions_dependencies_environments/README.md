@@ -25,17 +25,9 @@
   source env/bin/activate # env\Scripts\activate for windows
   pip install -r requirements.txt
   ```
-- Some packages provide tools that must be accessible globally via the command
-  line. *pipx* creates virtual environments for these tools and makes sure they
-  are accessible via the PATH variable.
-  - Some useful ones are *black*, *flake8*, *mypy*, *isort*, and *pipenv*.
-  ```
-  pip install pipx
-  pipx install black
-  pipx upgrade black
-  pipx run black some_script.py
-  pipx list # see what is installed
-  ```
-* *pipenv* is a project-level dependency management tool. It manages package
+- *pipx* is used to manage the virtual environments of packages that provide a
+  command line tool meant to be accessed globally via the PATH environment
+  variable. See _pipx. 
+- *pipenv* is a project-level dependency management tool. It manages package
   installations, dependencies, and virtual environments for a given project.
-* *pyenv* can be used to manage python versions. See _pyenv.
+- *pyenv* can be used to manage python versions. See _pyenv.
