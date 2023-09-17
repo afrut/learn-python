@@ -2,10 +2,15 @@
   - *pip* is for installing packages.
   - *setuptools* is used fro installing from source code.
   - *wheels* are pre-built binary package format for modules and libraries.
+  - The following command will install these packages to the system-wide
+    *site-packages* directory.
+    - On Windows, it is located in */path/to/python/installation/Lib/site-packages*.
   ```
   python3 -m pip install --upgrade pip setuptools wheel
   ```
 - User installation of a package to avoid breaking system-wide packages.
+  Installs to a user-specific location.
+  - On Windows, installs to *C:\Users\user\appdata\roaming\python\pythonVersion\site-packages*.
   ```
   pip install --user some_package
   ```
@@ -29,7 +34,8 @@
   command line tool meant to be accessed globally via the PATH environment
   variable. See _pipx. 
 - *pipenv* is a project-level dependency management tool. It manages package
-  installations, dependencies, and virtual environments for a given project.
+  installations, dependencies, and virtual environments for a given project. See
+  _pipenv.
 - *pyenv* can be used to manage python versions. See _pyenv.
 
 # Links
