@@ -70,6 +70,8 @@
   source env/bin/activate # env\Scripts\activate for windows
   pip install -r requirements.txt
   ```
+- *pip-tools* can be used to pin the versions of all packages required by a
+  top-level package. See _piptools.
 - *pipx* is used to manage the virtual environments of packages that provide a
   command line tool meant to be accessed globally via the PATH environment
   variable. See _pipx. 
