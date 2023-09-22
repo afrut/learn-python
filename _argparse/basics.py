@@ -1,6 +1,7 @@
 # python basics.py foo 3 --required foo --optional val1 --optionalFlag -of2 --restrictedOption a
 # python basics.py foo 3 --required foo --optional val1 --optionalFlag -of2 --restrictedOption a --optionalWithDefault
 # python basics.py foo 3 --required foo --optional val1 --optionalFlag -of2 --restrictedOption a --optionalWithDefault someValue
+# python basics.py foo 3 --required foo --optional val1 --optionalFlag -of2 --restrictedOption a --optionalWithDefault someValue --optionalMultipleArgs foo bar baz qaz
 import argparse
 import subprocess as sp
 
@@ -24,6 +25,11 @@ if __name__ == "__main__":
         type=str,
         default="valueWhenNotSpecified",
     )
+    parser.add_argument(
+        "--optionalMultipleArgs",
+        nargs="*",
+        help="An optional argument that accepts multiple values",
+    )
     parser.add_argument("-r", "--required", type=str, required=True)
     args = parser.parse_args()
 
@@ -32,10 +38,12 @@ if __name__ == "__main__":
     if args.optional:
         print(f"Optional parameter: {args.optional}")
     if args.optionalFlag:
-        print(f"Optional flag enabled")
+        print("Optional flag enabled")
     if args.optionalFlag2:
-        print(f"Optional flag2 enabled")
+        print("Optional flag2 enabled")
     if args.restrictedOption:
         print(f"Restricted option value: {args.restrictedOption}")
+    if args.optionalMultipleArgs:
+        print(f"Optional multiple args: {args.optionalMultipleArgs}")
     print(f"Optional argument with default value: {args.optionalWithDefault}")
     print(f"Required argument value: {args.required}")
