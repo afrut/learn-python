@@ -44,11 +44,8 @@ class LinkedList:
         return self._LinkedListIterator(self.root)
 
 
+# A class that returns an iterator object
 class MyIterator:
-    """
-    An iterator object that loops from 0 to 10 and back again.
-    """
-
     def __init__(self):
         self.looped = False
         self.x = 0
@@ -73,6 +70,8 @@ class MyIterator:
             self.looped = True
         return ret
 
+
+# Generators can also be used to return objects. See generators.
 
 if __name__ == "__main__":
     # Loop through a simple iterator object
