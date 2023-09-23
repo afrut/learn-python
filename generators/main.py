@@ -5,6 +5,7 @@ def evens_below_20():
     for x in range(0, 20, 2):
         yield x
 
+
 def odds_below_20():
     """
     A function that returns a generator that gives odd numbers below 20
@@ -12,11 +13,13 @@ def odds_below_20():
     for x in range(1, 20, 2):
         yield x
 
+
 if __name__ == "__main__":
-    # g is a generator. Generators are useful because they don't load all
-    # elements into memory. Suppose a large series of numbers are computed that
-    # cannot fit into memory. Instead of using a list, a generator can be used
-    # to compute the next value only when it is ready to be processed.
+    # g is a generator iterator/object. Generators are useful because they don't
+    # load all elements into memory. Suppose a large series of numbers are
+    # computed that cannot fit into memory. Instead of using a list, a generator
+    # can be used to compute the next value only when it is ready to be
+    # processed.
     g = evens_below_20()
 
     # Iterate through all elements of a generator
