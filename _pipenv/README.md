@@ -1,4 +1,4 @@
-- *pipenv* is aimed at Python dependencies for projects with multiple
+- *pipenv* is aimed at managing Python dependencies for projects with multiple
   collaborators.
   - Contributors can isolate a project's dependencies by creating
     virtual environments, installing dependencies, and `pip freeze >
