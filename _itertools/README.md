@@ -1,0 +1,2 @@
+- The `itertools` module contains a set of fast functions that facilitates iteration.
+- [Documentation](https://docs.python.org/3/library/itertools.html)
