@@ -37,7 +37,7 @@
   pip install dist/project_name_112bf10294ca91e-0.0.1-py3-none-any.whl
   ```
 
-# Managing Dependencies and Installations
+# Installation
 - Install and update tools that manage python packages.
   - *pip* is for installing packages.
   - *setuptools* is used fro installing from source code.
@@ -58,27 +58,7 @@
   ```
   pip install -e <path_to_source_code>
   ```
-- A *requirements.txt* file contains dependencies.
-  ```
-  pip freeze >> requirements.txt
-  ```
-- *Virtual environments* are used to isolate project dependencies and avoid
-  version conflicts between multiple projects. See _venv.
-  - Create activate a virtual environment, activate it, and install dependencies.
-  ```
-  python -m venv env
-  source env/bin/activate # env\Scripts\activate for windows
-  pip install -r requirements.txt
-  ```
-- *pip-tools* can be used to pin the versions of all packages required by a
-  top-level package. See _piptools.
-- *pipx* is used to manage the virtual environments of packages that provide a
-  command line tool meant to be accessed globally via the PATH environment
-  variable. See _pipx. 
-- *pipenv* is a project-level dependency management tool. It manages package
-  installations, dependencies, and virtual environments for a given project. See
-  _pipenv.
-- *pyenv* can be used to manage python versions. See _pyenv.
+- See *devtools_envs* for dependency management and environment setup.
 
 # Links
 - [Packaging Guide](https://packaging.python.org/en/latest/)
