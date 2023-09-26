@@ -1,20 +1,23 @@
 # Runs with pwsh
-#exec(open("main.py").read())
+# exec(open("main.py").read())
+import glob
 import os
 import pathlib
 import shutil
-import stat # To interpret results of os.stat()
+import stat  # To interpret results of os.stat()
 import sys
-import glob
 from datetime import datetime as dt
-from typing import List, Generator, Tuple, Set
 from functools import reduce
+from typing import Generator, List, Set, Tuple
 
-def os_walk_print(g: Generator[Tuple[str, List[str], List[str]], None, None],
-                  depth: int = 0,
-                  space: str = "    ",
-                  ignore: Set[str] = None,
-                  output: str = "./os_walk/output.txt"):
+
+def os_walk_print(
+    g: Generator[Tuple[str, List[str], List[str]], None, None],
+    depth: int = 0,
+    space: str = "    ",
+    ignore: Set[str] = None,
+    output: str = "./os_walk/output.txt",
+):
     """
     A recursive function that takes the generator returned by os.walk and writes results
     to a file
@@ -73,10 +76,11 @@ def os_walk_print(g: Generator[Tuple[str, List[str], List[str]], None, None],
 
         # Recursively call on child directories
         for _ in directories:
-            os_walk_print(g, depth = depth + 1, ignore = ignore)
+            os_walk_print(g, depth=depth + 1, ignore=ignore)
     except StopIteration:
         # No more nodes to process
         pass
+
 
 if __name__ == "__main__":
     print("----------------------------------------")
@@ -99,6 +103,9 @@ if __name__ == "__main__":
     # Append to a path
     file_name: str = os.path.join(resources_path, "plaintext.txt")
 
+    # Filepath without extension
+    file_path_no_ext: str = os.path.splitext(f"{resources_path}\\plaintext.txt")[0]
+
     print(f"this_file_path = {this_file_path}")
     print(f"this_file_dir = {this_file_dir}")
     print(f"resources_path = {resources_path}")
@@ -112,7 +119,7 @@ if __name__ == "__main__":
     print("----------------------------------------")
     print(f"  Contents of {file_name}")
     print("----------------------------------------")
-    print(contents, end = "\n\n\n")
+    print(contents, end="\n\n\n")
     fl.close()
 
     # Write text to a file
@@ -147,7 +154,7 @@ if __name__ == "__main__":
         if os.path.isdir(full_path):
             dirs.append(full_path)
     print("Directories:")
-    list(map(lambda x: print(f"    {x}"), sorted(dirs))) # print contents of list
+    list(map(lambda x: print(f"    {x}"), sorted(dirs)))  # print contents of list
     print("Files:")
     list(map(lambda x: print(f"    {x}"), sorted(files)))
     print("\n\n")
@@ -166,9 +173,9 @@ if __name__ == "__main__":
     files = list(filter(lambda x: x.is_file(), results))
     dirs = list(filter(lambda x: x.is_dir(), results))
     print("Directories:")
-    list(map(lambda x: print(f"    {x.path}"), sorted(dirs, key = lambda x: x.path)))
+    list(map(lambda x: print(f"    {x.path}"), sorted(dirs, key=lambda x: x.path)))
     print("Files:")
-    list(map(lambda x: print(f"    {x.path}"), sorted(files, key = lambda x: x.path)))
+    list(map(lambda x: print(f"    {x.path}"), sorted(files, key=lambda x: x.path)))
     print("\n\n")
     # Other attributes that can be accessed
     # print(f"    name: {dir_entry.name}")
@@ -185,7 +192,9 @@ if __name__ == "__main__":
     print("----------------------------------------")
     print("  pathlib.Path().iterdir()")
     print("----------------------------------------")
-    results: Generator[pathlib.WindowsPath, None, None] = pathlib.Path(repo_root_path).iterdir()
+    results: Generator[pathlib.WindowsPath, None, None] = pathlib.Path(
+        repo_root_path
+    ).iterdir()
     results: List[pathlib.WindowsPath] = list(results)
     dirs = filter(lambda x: x.is_dir(), results)
     files = filter(lambda x: x.is_file(), results)
@@ -203,12 +212,16 @@ if __name__ == "__main__":
     info = os.stat(this_file_path)
     mode = info.st_mode
     print(f"Attributes of {this_file_path}")
-    print(f"    S_ISDIR = {stat.S_ISDIR(mode)}")                # file is a directory
-    print(f"    S_ISREG = {stat.S_ISREG(mode)}")                # file is a regular file
-    print(f"    ST_SIZE = {info.st_size}")                      # size of the file in bytes
+    print(f"    S_ISDIR = {stat.S_ISDIR(mode)}")  # file is a directory
+    print(f"    S_ISREG = {stat.S_ISREG(mode)}")  # file is a regular file
+    print(f"    ST_SIZE = {info.st_size}")  # size of the file in bytes
     print(f"    ST_ATIME = {dt.fromtimestamp(info.st_atime)}")  # time of last access
-    print(f"    ST_MTIME = {dt.fromtimestamp(info.st_mtime)}")  # time of last modification
-    print(f"    ST_CTIME = {dt.fromtimestamp(info.st_ctime)}")  # creation time on windows/metadata change time on other systems like Unix
+    print(
+        f"    ST_MTIME = {dt.fromtimestamp(info.st_mtime)}"
+    )  # time of last modification
+    print(
+        f"    ST_CTIME = {dt.fromtimestamp(info.st_ctime)}"
+    )  # creation time on windows/metadata change time on other systems like Unix
     print("\n\n")
 
     print("----------------------------------------")
@@ -217,8 +230,13 @@ if __name__ == "__main__":
     # Get all files in directory and print most recently modified file
     results: List[pathlib.WindowsPath] = list(pathlib.Path(repo_root_path).iterdir())
     files = list(filter(lambda x: x.is_file(), results))
-    files_sorted = sorted(files, key = lambda x: x.stat().st_mtime, reverse = True)
-    list(map(lambda x: print(f"    {dt.fromtimestamp(x.stat().st_mtime)}, {x}"), files_sorted))
+    files_sorted = sorted(files, key=lambda x: x.stat().st_mtime, reverse=True)
+    list(
+        map(
+            lambda x: print(f"    {dt.fromtimestamp(x.stat().st_mtime)}, {x}"),
+            files_sorted,
+        )
+    )
     print("\n\n")
 
     print("----------------------------------------")
@@ -244,9 +262,8 @@ if __name__ == "__main__":
 
     # Traverse directory and subdirectories and write output to text file
     g = os.walk(repo_root_path)
-    os_walk_print(g, ignore = ignore)
+    os_walk_print(g, ignore=ignore)
     sys.exit()
-
 
     # list(map(lambda x: print(f"    {x[0]}"), os.walk(repo_root_path)))
     # print(type(os.walk(repo_root_path)))
@@ -260,9 +277,6 @@ if __name__ == "__main__":
     print("  Pattern matching filenames")
     print("----------------------------------------")
     results: List[pathlib.WindowsPath] = list(pathlib.Path(repo_root_path).iterdir())
-
-
-
 
     print("----------------------------------------")
     print("  Directories")
@@ -278,11 +292,10 @@ if __name__ == "__main__":
         os.makedirs(os_makedirs)
     except FileExistsError:
         print(f"Directory {os_mkdir} already exists.")
-    pathlib.Path(pathlib_mkdir).mkdir(exist_ok = True)
-    pathlib.Path(pathlib_makedirs).mkdir(parents = True, exist_ok = True)
+    pathlib.Path(pathlib_mkdir).mkdir(exist_ok=True)
+    pathlib.Path(pathlib_makedirs).mkdir(parents=True, exist_ok=True)
 
     # Check that directories are created
-
 
     # os.rmdir()
     # os.makedirs ()
