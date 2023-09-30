@@ -1,0 +1,3 @@
+- [Basic date and time types](https://docs.python.org/3/library/datetime.html)
+- [Format Specifiers](https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior)
+- [Timezones](https://docs.python.org/3/library/zoneinfo.html)
