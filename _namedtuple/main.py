@@ -17,3 +17,4 @@ if __name__ == "__main__":
 
     # Cast the output of returns into the record class
     v = Vector3D._make(some_func())
+    v._asdict()  # Get dictionary representation of the class
