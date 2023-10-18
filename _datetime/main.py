@@ -2,6 +2,9 @@ import datetime
 from zoneinfo import ZoneInfo, available_timezones
 
 if __name__ == "__main__":
+    # Get date today
+    today = datetime.date.today()
+
     # Get the time now
     dt = datetime.datetime.now()
 
@@ -36,3 +39,6 @@ if __name__ == "__main__":
 
     # Convert to another timezone
     dt = dt.astimezone(ZoneInfo("UTC"))
+
+    # Subtract 1 day, 1 hour and 1 minute from dt
+    dt = dt - datetime.timedelta(days=1, hours=1, minutes=1)
