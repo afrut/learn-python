@@ -1,9 +1,10 @@
-#python threading\\useEvents.py
+# python threading\\useEvents.py
 # Use events to communicate with threads
 # In this script, events are used to kill threads
 import logging
-import time
 import threading
+import time
+
 
 # Function to run in threads
 def func(name: str, ts: int, stop: threading.Event):
@@ -15,24 +16,24 @@ def func(name: str, ts: int, stop: threading.Event):
             break
     logging.info(f"Thread {name} finished.")
 
+
 if __name__ == "__main__":
     # Format for timestamp and logging message
     fmt = "%(asctime)s: %(message)s"
     datefmt = "%Y-%m-%d %H:%M:%S"
 
     # Configure logging
-    logging.basicConfig(format = fmt, level = logging.INFO, datefmt = datefmt)
+    logging.basicConfig(format=fmt, level=logging.INFO, datefmt=datefmt)
 
     # Create multiple threads
-    threadP = [("spam", 2)
-        ,("ham", 2)
-        ,("eggs", 3)
-        ,("bacon", 3)
-        ,("toast", 5)]
+    threadP = [("spam", 2), ("ham", 2), ("eggs", 3), ("bacon", 3), ("toast", 5)]
     threads = dict()
     for tpl in threadP:
         stopEvent = threading.Event()
-        threads[tpl[0]] = (threading.Thread(target = func, args = (tpl[0], tpl[1], stopEvent)), stopEvent)
+        threads[tpl[0]] = (
+            threading.Thread(target=func, args=(tpl[0], tpl[1], stopEvent)),
+            stopEvent,
+        )
 
     # Start all therads
     for _, tpl in threads.items():

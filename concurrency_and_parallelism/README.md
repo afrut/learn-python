@@ -25,3 +25,4 @@
 - [Multithreading vs Multiprocessing in Python](https://www.geeksforgeeks.org/difference-between-multithreading-vs-multiprocessing-in-python/)
 - [Python Concurrency and Parallelism Explained](https://www.infoworld.com/article/3632284/python-concurrency-and-parallelism-explained.html)
 - [Async IO in Python: A Complete Walkthrough](https://realpython.com/async-io-python/#the-asyncawait-syntax-and-native-coroutines)
+- [Threading in Python](https://docs.python.org/3/library/threading.html)
