@@ -42,28 +42,3 @@ if __name__ == "__main__":
     thd.start()
     time.sleep(10)
     stop.set()
-
-    # # Create multiple threads
-    # threadP = [("spam", 2), ("ham", 2), ("eggs", 3), ("bacon", 3), ("toast", 5)]
-    # threads = dict()
-    # for tpl in threadP:
-    #     stopEvent = threading.Event()
-    #     threads[tpl[0]] = (
-    #         threading.Thread(target=func, args=(tpl[0], tpl[1], stopEvent)),
-    #         stopEvent,
-    #     )
-
-    # # Start all therads
-    # for _, tpl in threads.items():
-    #     tpl[0].start()
-
-    # # Sleep for 10 seconds then stop all threads
-    # time.sleep(10)
-    # for _, tpl in threads.items():
-    #     tpl[1].set()
-
-    # # Wait for all threads to complete
-    # for _, tpl in threads.items():
-    #     tpl[0].join()
-
-    # logging.info(f"*** All done. ***")
