@@ -51,8 +51,8 @@ class MySubList(MyList):
 class Person(metaclass=ABCMeta):
     # An abstract method with default implementation
     @abstractmethod
-    def work():
-        print("Work")
+    def work(self):
+        print("Go to work")
 
 class Manager(Person):
     pass
@@ -60,9 +60,16 @@ class Manager(Person):
 # A concrete class - a class that inherits from an abstract base class and
 # implements its abstractmethods are concrete classes
 class Employee(Person):
-    def work():
-        print("Go to work")
+    def work(self):
+        print("Go to office")
 
+class Athlete(Person):
+    def work(self):
+        print("Go to gym")
+
+class RandomPerson(Person):
+    def work(self):
+        super().work()
 
 
 # ----------------------------------------
@@ -94,4 +101,11 @@ if __name__ == "__main__":
 
     # A concrete class can be instantiated. Inherting from abstract base
     # classes can be used to enforce guarantees on the presence of a set of methods.
-    Employee()
+    emp = Employee()
+
+    # Python's polymorphism. Method called depends on type of object
+    ath = Athlete()
+    rp = RandomPerson()
+    emp.work()
+    ath.work()
+    rp.work()
