@@ -26,3 +26,4 @@
 - [Python Concurrency and Parallelism Explained](https://www.infoworld.com/article/3632284/python-concurrency-and-parallelism-explained.html)
 - [Async IO in Python: A Complete Walkthrough](https://realpython.com/async-io-python/#the-asyncawait-syntax-and-native-coroutines)
 - [Threading in Python](https://docs.python.org/3/library/threading.html)
+- [Multiprocessing in Python](https://docs.python.org/3/library/multiprocessing.html)
