@@ -113,6 +113,16 @@ if __name__ == "__main__":
     print(f"file_name = {file_name}")
     print("\n\n")
 
+    print("----------------------------------------")
+    print("  File and path existence")
+    print("----------------------------------------")
+    os.path.exists(repo_root_path)  # Checks the existence of the path
+    os.path.isdir(repo_root_path)  # Checks the existence of the directory
+    os.path.isfile(file_name)  # Checks the existence of the file
+    pathlib.Path(repo_root_path).exists()  # Checks the existence of the path
+    pathlib.Path(repo_root_path).is_dir()  # Checks the existence of the directory
+    pathlib.Path(repo_root_path).is_file()  # Checks the existence of the file
+
     # Read file contents as text
     fl = open(file_name, "rt")
     contents = fl.read()
