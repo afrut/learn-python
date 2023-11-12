@@ -8,6 +8,14 @@ class MyClass:
         self.x = x
 
 
+def func():
+    x = 1
+    # Returns a dict where keys are variable names and values are the values of
+    # the variables.
+    # In this case, vars_in_scope  = {"x": 1}
+    vars_in_scope = locals()
+
+
 if __name__ == "__main__":
     # Get the value of an object's attribute
     print(getattr(MyClass, "some_attr"))
