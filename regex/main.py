@@ -33,3 +33,13 @@ if __name__ == "__main__":
         pattern=words_that_start_with_th,
         string="this string will match because the first word starts with th",
     )
+
+    # Matching groups
+    some_date = "1970-01-27"
+    pattern = re.compile(r"(\d+)-(\d+)-(\d+)")
+    ret: re.Match = re.match(pattern=pattern, string=some_date)
+    ret.group(0) # 1970-01-27
+    ret.group(1) # 1970
+    ret.group(2) # 01
+    ret.group(3) # 27
+    ret.groups() # tuple: ("1970", "01", "27")
