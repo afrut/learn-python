@@ -95,16 +95,16 @@ if __name__ == "__main__":
 
     # Get the full path of a file or directory, resolving symlinks if the OS
     # supports it
-    resources_path: str = os.path.realpath(f"{this_file_dir}\\resources")
+    resources_path: str = os.path.realpath(f"{this_file_dir}/resources")
 
     # Get the root directory of the repository
-    repo_root_path: str = os.path.abspath(f"{this_file_dir}\\..")
+    repo_root_path: str = os.path.abspath(f"{this_file_dir}/..")
 
     # Append to a path
     file_name: str = os.path.join(resources_path, "plaintext.txt")
 
     # Filepath without extension
-    file_path_no_ext: str = os.path.splitext(f"{resources_path}\\plaintext.txt")[0]
+    file_path_no_ext: str = os.path.splitext(f"{resources_path}/plaintext.txt")[0]
 
     print(f"this_file_path = {this_file_path}")
     print(f"this_file_dir = {this_file_dir}")
@@ -124,6 +124,7 @@ if __name__ == "__main__":
     pathlib.Path(repo_root_path).is_file()  # Checks the existence of the file
 
     # Read file contents as text
+    print(file_name)
     fl = open(file_name, "rt")
     contents = fl.read()
     print("----------------------------------------")
@@ -258,10 +259,10 @@ if __name__ == "__main__":
     # ret[2]: List[str] - file names in path ret[0]
     # List of directories to ignore
     ignore_dirs = {
-        f"{repo_root_path}\\.git",
-        f"{repo_root_path}\\__pycache__",
-        f"{repo_root_path}\\**\\env",
-        f"{repo_root_path}\\.vscode",
+        f"{repo_root_path}/.git",
+        f"{repo_root_path}/__pycache__",
+        f"{repo_root_path}/**/env",
+        f"{repo_root_path}/.vscode",
     }
 
     # Globbed set of directories and files to ignore
@@ -273,7 +274,6 @@ if __name__ == "__main__":
     # Traverse directory and subdirectories and write output to text file
     g = os.walk(repo_root_path)
     os_walk_print(g, ignore=ignore)
-    sys.exit()
 
     # list(map(lambda x: print(f"    {x[0]}"), os.walk(repo_root_path)))
     # print(type(os.walk(repo_root_path)))
@@ -284,17 +284,12 @@ if __name__ == "__main__":
         print(type(x))
 
     print("----------------------------------------")
-    print("  Pattern matching filenames")
-    print("----------------------------------------")
-    results: List[pathlib.WindowsPath] = list(pathlib.Path(repo_root_path).iterdir())
-
-    print("----------------------------------------")
     print("  Directories")
     print("----------------------------------------")
-    os_mkdir = f"{this_file_dir}\\os_mkdir"
-    pathlib_mkdir = f"{this_file_dir}\\pathlib_mkdir"
-    os_makedirs = f"{this_file_dir}\\os\\make\\dirs"
-    pathlib_makedirs = f"{this_file_dir}\\path\\lib\\make\\dirs"
+    os_mkdir = f"{this_file_dir}/os_mkdir"
+    pathlib_mkdir = f"{this_file_dir}/pathlib_mkdir"
+    os_makedirs = f"{this_file_dir}/os/make/dirs"
+    pathlib_makedirs = f"{this_file_dir}/path/lib/make/dirs"
 
     # Create directories
     try:
@@ -304,6 +299,35 @@ if __name__ == "__main__":
         print(f"Directory {os_mkdir} already exists.")
     pathlib.Path(pathlib_mkdir).mkdir(exist_ok=True)
     pathlib.Path(pathlib_makedirs).mkdir(parents=True, exist_ok=True)
+    print("\n\n")
+
+    print("----------------------------------------")
+    print("  File creation, deletion, movement")
+    print("----------------------------------------")
+    # Create a file
+    with open(os.path.join(f"{this_file_dir}",
+        "resources",
+        "moveme.txt"), "wt") as fl:
+        fl.write("File to move")
+
+    # Remove a file
+    file_to_remove = os.path.join(f"{this_file_dir}",
+        "resources",
+        "subdir",
+        "moveme.txt")
+    if os.path.exists(file_to_remove) and os.path.isfile(file_to_remove):
+        os.remove(file_to_remove)
+
+    # Move a file to a subdirectory
+    source = f"{this_file_dir}/resources/moveme.txt"
+    destination = f"{this_file_dir}/resources/subdir/moveme.txt"
+    os.rename(source, destination)
+    if os.path.exists(destination) and not(os.path.exists(source)):
+        print("File successfully moved")
+        os.rename(destination, source)
+    print("\n\n")
+
+
 
     # Check that directories are created
 
@@ -311,8 +335,16 @@ if __name__ == "__main__":
     # os.makedirs ()
     # pathlib.Path.mkdir(parents = True)
 
+    # print("----------------------------------------")
+    # print("  Pattern matching filenames")
+    # print("----------------------------------------")
+    # results: List[pathlib.WindowsPath] = list(pathlib.Path(repo_root_path).iterdir())
+    # print(results)
+    # print("\n\n")
+
     # fnmatch.fnmatch
     # glob.glob
     # glob.iglob
     # pathlib.Path.glob
     # os.walk
+
