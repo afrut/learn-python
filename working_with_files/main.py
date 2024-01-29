@@ -101,7 +101,10 @@ if __name__ == "__main__":
     repo_root_path: str = os.path.abspath(f"{this_file_dir}/..")
 
     # Append to a path
-    file_name: str = os.path.join(resources_path, "plaintext.txt")
+    file_path: str = os.path.join(resources_path, "plaintext.txt")
+
+    # Get the name of the file from its path
+    file_name: str = os.path.basename(file_path)
 
     # Filepath without extension
     file_path_no_ext: str = os.path.splitext(f"{resources_path}/plaintext.txt")[0]
@@ -110,7 +113,7 @@ if __name__ == "__main__":
     print(f"this_file_dir = {this_file_dir}")
     print(f"resources_path = {resources_path}")
     print(f"repo_root_path = {repo_root_path}")
-    print(f"file_name = {file_name}")
+    print(f"file_path = {file_path}")
     print("\n\n")
 
     print("----------------------------------------")
@@ -118,17 +121,17 @@ if __name__ == "__main__":
     print("----------------------------------------")
     os.path.exists(repo_root_path)  # Checks the existence of the path
     os.path.isdir(repo_root_path)  # Checks the existence of the directory
-    os.path.isfile(file_name)  # Checks the existence of the file
+    os.path.isfile(file_path)  # Checks the existence of the file
     pathlib.Path(repo_root_path).exists()  # Checks the existence of the path
     pathlib.Path(repo_root_path).is_dir()  # Checks the existence of the directory
     pathlib.Path(repo_root_path).is_file()  # Checks the existence of the file
 
     # Read file contents as text
-    print(file_name)
-    fl = open(file_name, "rt")
+    print(file_path)
+    fl = open(file_path, "rt")
     contents = fl.read()
     print("----------------------------------------")
-    print(f"  Contents of {file_name}")
+    print(f"  Contents of {file_path}")
     print("----------------------------------------")
     print(contents, end="\n\n\n")
     fl.close()
@@ -274,14 +277,6 @@ if __name__ == "__main__":
     # Traverse directory and subdirectories and write output to text file
     g = os.walk(repo_root_path)
     os_walk_print(g, ignore=ignore)
-
-    # list(map(lambda x: print(f"    {x[0]}"), os.walk(repo_root_path)))
-    # print(type(os.walk(repo_root_path)))
-    results = os.walk(repo_root_path)
-    for _ in range(2):
-        x = next(results)
-        print(x)
-        print(type(x))
 
     print("----------------------------------------")
     print("  Directories")
