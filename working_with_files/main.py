@@ -320,6 +320,14 @@ if __name__ == "__main__":
     if os.path.exists(destination) and not(os.path.exists(source)):
         print("File successfully moved")
         os.rename(destination, source)
+
+    # Copy a file
+    source = f"{this_file_dir}/resources/moveme.txt"
+    destination = f"{this_file_dir}/resources/subdir/copied.txt"
+    shutil.copy(source, destination)
+    if os.path.exists(destination):
+        print("File successfully copied")
+        os.remove(destination)
     print("\n\n")
 
 
