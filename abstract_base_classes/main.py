@@ -48,7 +48,8 @@ class MySubList(MyList):
 
 # ----------------------------------------
 # Methods decorated with @abstractmethod must be overriden by inheriting classes
-class Person(metaclass=ABCMeta):
+# Alternatively, class Person(metaclass=ABCMeta):
+class Person(ABC):
     # An abstract method with default implementation
     @abstractmethod
     def work(self):
