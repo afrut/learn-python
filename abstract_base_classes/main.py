@@ -9,8 +9,8 @@
 # abstract classes and will have to implement abstract methods. The same goes
 # for interfaces. Interfaces can be defined and subtypes that implement the
 # interface must provide implementations for all the methods defined. When used
-# with polymorphism features these languages, these address the needs mentioned
-# above.
+# with polymorphism features in these languages, these address the needs
+# mentioned above.
 
 # Another way to address these needs is to allow code external to the class to
 # inspect the object and see if it supports certain methods. Developers can
