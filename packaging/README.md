@@ -68,4 +68,6 @@
 - [Managing dependencies](https://packaging.python.org/en/latest/tutorials/managing-dependencies/#managing-dependencies)
 - [Packaging Python projects](https://packaging.python.org/en/latest/tutorials/packaging-projects/#)
   - [Declaring project metadata](https://packaging.python.org/en/latest/specifications/declaring-project-metadata/#declaring-project-metadata)
+  - [Choosing a build backend](https://packaging.python.org/en/latest/tutorials/packaging-projects/#choosing-a-build-backend)
 - [Packaging and distributing projects](https://packaging.python.org/en/latest/guides/distributing-packages-using-setuptools/#distributing-packages)
+- [`pip`'s Build System Interface](https://pip.pypa.io/en/stable/reference/build-system/)
