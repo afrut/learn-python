@@ -140,18 +140,33 @@ def add_2d_vectors_decorated(x, y):
 # This will log the return 7 times before returning
 add_2d_vectors_decorated(tpl2d1, tpl2d2)
 
-
+print("")
 # endregion
 
 
-# # Repeat the function 7 times
-# @repeat(num=7)
-# def add_2d_vectors_decorated(x: Tuple[int, int], y: Tuple[int, int]) -> Tuple[int, int]:
-#     return (x[0] + y[0], x[1] + y[1])
+# region Keeping state in a function
+def count_calls(func: Callable) -> Callable:
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        wrapper.number_of_times_called += 1
+        return func(*args, **kwargs)
+
+    wrapper.number_of_times_called = 0  # type: ignore
+    return wrapper
 
 
-# print(add_2d_vectors_decorated((1, 1), (2, 2)))
+@count_calls
+def print_foo():
+    print("foo")
 
+
+print("Keeping state in a function")
+for _ in range(5):
+    print_foo()
+print(print_foo.number_of_times_called)  # type: ignore
+
+
+# endregion
 
 # See json_schema_validation.py for validating input dict schemas.
 
