@@ -1,6 +1,6 @@
 import logging
 from functools import wraps
-from typing import Callable, Tuple
+from typing import Callable, Tuple, Type
 
 # Format for timestamp and logging message
 fmt = "%(pathname)s:%(lineno)d: %(message)s"
@@ -144,7 +144,7 @@ print("")
 # endregion
 
 
-# region Keeping state in a function
+# region Keeping state in a function using function attributes
 def count_calls(func: Callable) -> Callable:
     @wraps(func)
     def wrapper(*args, **kwargs):
@@ -165,7 +165,53 @@ for _ in range(5):
     print_foo()
 print(print_foo.number_of_times_called)  # type: ignore
 
+print("")
+# endregion
 
+
+# region Implementing a singleton decorator can be used to ensure only 1
+# instance of a class is instantiated
+def singleton(cls: Type):
+    """
+    Takes a class. When a class is invoked, its constructor/initializer is called
+    """
+
+    @wraps(cls)
+    def wrapper(*args, **kwargs):
+        print(wrapper.class_instance)
+        cls(*args, **kwargs)
+
+    wrapper.class_instance = None  # type: ignore
+
+    return wrapper
+
+
+class SomeClass:
+    def __init__(self):
+        pass
+
+
+@singleton
+class SingletonClass:
+    def __init__(self):
+        pass
+
+
+someclass1 = SomeClass()
+someclass2 = SomeClass()
+singletonclass1 = SingletonClass()
+singletonclass2 = SingletonClass()
+
+
+print("Singletons")
+print(f"id(someclass1) == id(someclass2): {id(someclass1) == id(someclass2)}")
+print(f"someclass1 is someclass2: {someclass1 is someclass2}")
+print(
+    f"id(singletonclass1) == id(singletonclass2): {id(singletonclass1) == id(singletonclass2)}"
+)
+print(f"singletonclass1 is singletonclass2: {singletonclass1 is singletonclass2}")
+
+print("")
 # endregion
 
 # See json_schema_validation.py for validating input dict schemas.
