@@ -1,5 +1,6 @@
 import logging
 from functools import wraps
+from time import perf_counter, sleep
 from typing import Callable, Tuple, Type
 
 # Format for timestamp and logging message
@@ -178,7 +179,6 @@ def singleton(cls: Type):
 
     @wraps(cls)
     def wrapper(*args, **kwargs):
-        print(wrapper.class_instance)
         cls(*args, **kwargs)
 
     wrapper.class_instance = None  # type: ignore
@@ -214,6 +214,31 @@ print(f"singletonclass1 is singletonclass2: {singletonclass1 is singletonclass2}
 print("")
 # endregion
 
+
+# region Timing function
+def timer(func: Callable) -> Callable:
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start_time = perf_counter()
+        ret = func(*args, **kwargs)
+        wrapper.elapsed = perf_counter() - start_time
+        print(f"{func.__name__} took {wrapper.elapsed:.6f}s")
+        return ret
+
+    return wrapper
+
+
+@timer
+def lazy_func():
+    sleep(3)
+
+
+print("Timing functions")
+lazy_func()
+print("")
+
+# endregion
+
 # See json_schema_validation.py for validating input dict schemas.
 
 # decorators that take 0 or keyword args
@@ -221,13 +246,11 @@ print("")
 # chaining decorators
 # classes as decorators with __call__
 
-# timing functions
 # debugging code
 # rate limiting code
 # registering plugins
 # authentication and authorization (flask)
 # stateful decorators - call counters
-# creating singletons
 # caching return values
 # adding information - eg, units
 # validating inputs
