@@ -179,7 +179,9 @@ def singleton(cls: Type):
 
     @wraps(cls)
     def wrapper(*args, **kwargs):
-        cls(*args, **kwargs)
+        if wrapper.class_instance is None:
+            wrapper.class_instance = cls(*args, **kwargs)
+        return wrapper.class_instance
 
     wrapper.class_instance = None  # type: ignore
 
