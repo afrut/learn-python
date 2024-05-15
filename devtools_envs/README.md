@@ -58,6 +58,10 @@ listed in the following sections.
   ```
   pip freeze | xargs pip uninstall -y
   ```
+- Uninstall all Python packages except `some_package` and `another_package`
+  ```
+  pip freeze | grep -Ev "(some_package|another_package)" | xargs pip uninstall -y
+  ```
 
 # Links
 
