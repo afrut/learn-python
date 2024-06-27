@@ -1,6 +1,4 @@
 # python main.py
-# exec(open("main.py").read())
-
 # Import a module from the directory that main.py is run into the global
 # namespace of this module. If a standard module also named my_module exists,
 # the module in the current directory takes precedence.
@@ -28,6 +26,9 @@ from my_package import package_var
 
 # Import a module defined in a package
 from my_package import package_module as pm
+
+# Import a function defined in a module in a package
+from my_package.another_package_module import another_package_module_foo
 
 # Import a sub-package defined in a package
 from my_package.sub_package import sub_package_module as spm
@@ -60,3 +61,6 @@ if __name__ == "__main__":
 
     # Access a name in a module inside a package
     pm.package_module_foo()
+
+    # Call a function from a module in a package
+    another_package_module_foo()
