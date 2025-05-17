@@ -39,6 +39,12 @@ create_venv:
 	pyenv virtualenv $${PYTHON_VERSION} $${VENV_NAME} --force && \
 	pyenv local $${VENV_NAME}
 
+install_python_dependencies:
+	@$(setup_environment) && \
+	pip install -r "$${PROJECT_TAG}/requirements.txt"
+
+
+
 lock:
 	@$(setup_environment) && \
 	PWD=$$(pwd) && \
@@ -46,6 +52,6 @@ lock:
 	poetry lock && \
 	poetry export --format requirements.txt --output requirements.txt --without-hashes
 
-install_python_dependencies:
+delete_venv:
 	@$(setup_environment) && \
-	pip install -r "$${PROJECT_TAG}/requirements.txt"
+	pyenv uninstall --force $${VENV_NAME}
