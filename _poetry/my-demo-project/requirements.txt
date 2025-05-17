@@ -1,0 +1,5 @@
+certifi==2025.4.26 ; python_full_version >= "3.12.0" and python_full_version < "3.13.0"
+charset-normalizer==3.4.2 ; python_full_version >= "3.12.0" and python_full_version < "3.13.0"
+idna==3.10 ; python_full_version >= "3.12.0" and python_full_version < "3.13.0"
+requests==2.31.0 ; python_full_version >= "3.12.0" and python_full_version < "3.13.0"
+urllib3==2.4.0 ; python_full_version >= "3.12.0" and python_full_version < "3.13.0"

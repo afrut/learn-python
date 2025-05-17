@@ -7,6 +7,12 @@ define setup_environment
 	set -a
 endef
 
+all: \
+	install \
+	create_project \
+	create_venv \
+	install_python_dependencies
+
 install: \
 	install_pipx \
 	install_poetry
@@ -27,7 +33,19 @@ create_project:
 	@$(setup_environment) && \
 	poetry new $${PROJECT_TAG}
 
-# create_venv:
-# 	@$(setup_environment) && \
-# 	echo $${FOO} && \
-# 	pyenv install --skip-existing
+create_venv:
+	@$(setup_environment) && \
+	pyenv install --skip-existing $${PYTHON_VERSION} && \
+	pyenv virtualenv $${PYTHON_VERSION} $${VENV_NAME} --force && \
+	pyenv local $${VENV_NAME}
+
+lock:
+	@$(setup_environment) && \
+	PWD=$$(pwd) && \
+	cd $${PROJECT_TAG} && \
+	poetry lock && \
+	poetry export --format requirements.txt --output requirements.txt --without-hashes
+
+install_python_dependencies:
+	@$(setup_environment) && \
+	pip install -r "$${PROJECT_TAG}/requirements.txt"
